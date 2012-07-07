@@ -100,7 +100,7 @@ class SerializadoJson(object):
         return self.codigo == other.codigo
 
     def __repr__(self):
-        return '%s<%s>' % (str(self.__class__).split('.')[-1], self.codigo)
+        return '%s<%s>' % (self.__class__.__name__.split('.')[-1], self.codigo)
 
 class Persona(SerializadoJson):
     """Lista que agrupa personas."""
