@@ -16,22 +16,22 @@ class SerializadoJson(object):
     json_en_raiz = True # redefinir al heredar
     pk_field = "pk"
     required_fields = None
-    
+
     @property
     def primary_key(self):
         return getattr(self, self.pk_field)
-    
+
     def __init__(self, _pk=None, **kwargs):
         if self.required_fields is not None:
             _requeridos = list(self.required_fields)
             _requeridos.append(self.pk_field)
-            
+
             if not all([key in kwargs for key in _requeridos]):
                 raise AttributeError
 
         for key, val in kwargs.iteritems():
             setattr(self, key, val)
-            
+
     @classmethod
     def _leer_json(cls):
         """Lee las instancias desde json y arma un dict con la clave
@@ -129,9 +129,9 @@ class SerializadoJson(object):
 
     def __eq__(self, other):
         same_pk = self.primary_key == other.primary_key
-        same_class = self.__class__ is other.__class__ 
+        same_class = self.__class__ is other.__class__
         return same_pk and same_class
-        
+
     def __repr__(self):
         return '%s<%s>' % (self.__class__.__name__, self.primary_key)	
 
@@ -140,7 +140,7 @@ class Persona(SerializadoJson):
     """Lista que agrupa personas."""
     plural_name = 'Personas'
     pk_field = 'codigo'
-    
+
     required_fields = ('nombre', 'apellido', 'edad', 'estatura', 'cod_equipo')
-        
-    
+
+
