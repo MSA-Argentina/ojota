@@ -21,8 +21,8 @@ class SerializadoJson(object):
         else:
             for key, val in kwargs.iteritems():
                 setattr(self, key, val)
-            
-    
+
+
     @classmethod
     def _leer_json(cls):
         """Lee las instancias desde json y arma un dict con la clave
@@ -76,7 +76,7 @@ class SerializadoJson(object):
         todos = cls._leer_json().values()
         campo_orden = None
         if 'sorted' in kargs:
-            campo_orden = kargs['sorted']
+            campos_orden = kargs['sorted']
             del kargs['sorted']
 
         lista = [cls(**datos_elemento)
@@ -84,15 +84,19 @@ class SerializadoJson(object):
                  if all(datos_elemento[campo] == valor
                         for campo, valor in kargs.items())]
 
-        if campo_orden:
-            if campo_orden.startswith('-'):
-                invertir = True
-                campo_orden = campo_orden[1:]
-            else:
-                invertir = False
-            lista = sorted(lista,
-                           key=lambda e: getattr(e, campo_orden),
-                           reverse=invertir)
+        if campos_orden:
+            campos_orden = [x.strip() for x in campos_orden.split(',')]
+
+            for campo_orden in reversed(campos_orden):
+                if campo_orden.startswith('-'):
+                    invertir = True
+                    campo_orden = campo_orden[1:]
+                else:
+                    invertir = False
+
+                lista = sorted(lista,
+                               key=lambda e: getattr(e, campo_orden),
+                               reverse=invertir)
 
         return lista
 
@@ -105,5 +109,4 @@ class SerializadoJson(object):
 class Persona(SerializadoJson):
     """Lista que agrupa personas."""
     nombre_plural = 'Personas'
-        
-    
+
