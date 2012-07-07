@@ -2,7 +2,7 @@ import json
 import yaml
 import os
 
-PATH_DATOS = "datos"
+PATH_DATOS = "datos_json"
 
 def cod_datos_actual(cod_datos):
     """Setea el juego de datos actual."""
@@ -16,6 +16,7 @@ class Serializado(object):
     datos_en_raiz = True # redefinir al heredar
     pk_field = "pk"
     required_fields = None
+    relations = {}
 
     @property
     def primary_key(self):
@@ -167,12 +168,22 @@ class Serializado(object):
         return '%s<%s>' % (self.__class__.__name__, self.primary_key)	
 
 
+class Equipo(Serializado):
+    """Lista que agrupa personas."""
+    plural_name = 'Equipos'
+    pk_field = 'codigo'
+
+    required_fields = ('codigo')
+
+
 class Persona(Serializado):
     """Lista que agrupa personas."""
     plural_name = 'Personas'
     pk_field = 'codigo'
 
     required_fields = ('nombre', 'apellido', 'edad', 'estatura', 'cod_equipo')
+    relations = {'cod_equipo': Equipo}    
+    
 
 class Animal(Serializado):
     """Lista que agrupa animales."""
