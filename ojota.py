@@ -8,6 +8,12 @@ def cod_datos_actual(cod_datos):
     """Setea el juego de datos actual."""
     Serializado.COD_DATOS_ACTUAL = cod_datos
 
+def relation(attr_fk, to_class):
+    def relation_method(self):
+        fk = getattr(self,attr_fk)
+        return to_class.get(fk)
+    return property(relation_method)
+
 
 class Serializado(object):
     """Clase con instancias listadas en un archivo json."""
@@ -16,7 +22,6 @@ class Serializado(object):
     datos_en_raiz = True # redefinir al heredar
     pk_field = "pk"
     required_fields = None
-    relations = {}
 
     @property
     def primary_key(self):
@@ -32,17 +37,6 @@ class Serializado(object):
 
         for key, val in kwargs.iteritems():
             setattr(self, key, val)
-
-    def __getattribute__(self, attr):
-        ret = None
-        if attr in ['__dict__','__class__','relations']:
-            ret = super(Serializado, self).__getattribute__(attr)
-        elif attr in self.relations:
-            cls = self.relations[attr]
-            ret = cls.get(super(Serializado, self).__getattribute__(attr))
-        else:
-            ret = super(Serializado, self).__getattribute__(attr)
-        return ret
 
     @classmethod
     def _leer_archivo(cls):
@@ -181,8 +175,8 @@ class Persona(Serializado):
     pk_field = 'codigo'
 
     required_fields = ('nombre', 'apellido', 'edad', 'estatura', 'cod_equipo')
-    relations = {'cod_equipo': Equipo}    
-    
+    equipo = relation('cod_equipo', Equipo)
+
 
 class Animal(Serializado):
     """Lista que agrupa animales."""
