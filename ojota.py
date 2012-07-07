@@ -71,10 +71,26 @@ class SerializadoJson(object):
                 return None
 
     @classmethod
+    def _sort(cls, lista, campos_orden):
+        campos_orden = [x.strip() for x in campos_orden.split(',')]
+
+        for campo_orden in reversed(campos_orden):
+            if campo_orden.startswith('-'):
+                invertir = True
+                campo_orden = campo_orden[1:]
+            else:
+                invertir = False
+
+            lista = sorted(lista,
+                           key=lambda e: getattr(e, campo_orden),
+                           reverse=invertir)
+        return lista
+
+    @classmethod
     def all(cls, **kargs):
         """Obtiene la lista de elementos que cumplen las condiciones."""
         todos = cls._leer_json().values()
-        campo_orden = None
+        campos_orden = None
         if 'sorted' in kargs:
             campos_orden = kargs['sorted']
             del kargs['sorted']
@@ -85,18 +101,7 @@ class SerializadoJson(object):
                         for campo, valor in kargs.items())]
 
         if campos_orden:
-            campos_orden = [x.strip() for x in campos_orden.split(',')]
-
-            for campo_orden in reversed(campos_orden):
-                if campo_orden.startswith('-'):
-                    invertir = True
-                    campo_orden = campo_orden[1:]
-                else:
-                    invertir = False
-
-                lista = sorted(lista,
-                               key=lambda e: getattr(e, campo_orden),
-                               reverse=invertir)
+            lista = cls._sort(lista, campos_orden)
 
         return lista
 
