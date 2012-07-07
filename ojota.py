@@ -8,21 +8,29 @@ def cod_datos_actual(cod_datos):
     """Setea el juego de datos actual."""
     SerializadoJson.COD_DATOS_ACTUAL = cod_datos
 
-
 class SerializadoJson(object):
     """Clase con instancias listadas en un archivo json."""
     COD_DATOS_ACTUAL = ''
     nombre_plural = 'SerializadosJson' # redefinir al heredar
     json_en_raiz = True # redefinir al heredar
-
-    def __init__(self, _pk=None, **kwargs):
-        if _pk is not None:
-            self.codigo = _pk
-        else:
-            for key, val in kwargs.iteritems():
-                setattr(self, key, val)
-            
+    _primary_key = "codigo"
+    required_fields = None
     
+    @property
+    def primary_key(self):
+        return getattr(self, self._primary_key)
+    
+    def __init__(self, _pk=None, **kwargs):
+        if self.required_fields is not None:
+            _requeridos = list(self.required_fields)
+            _requeridos.append(self._primary_key)
+            
+            if not all([key in kwargs for key in _requeridos]):
+                raise AttributeError
+
+        for key, val in kwargs.iteritems():
+            setattr(self, key, val)
+            
     @classmethod
     def _leer_json(cls):
         """Lee las instancias desde json y arma un dict con la clave
@@ -46,21 +54,21 @@ class SerializadoJson(object):
                                          cls.nombre_plural + '.json')
 
             datos = json.load(open(path_json, 'r'))
-            elementos = dict((datos_elemento['codigo'], datos_elemento)
+            elementos = dict((datos_elemento[cls._primary_key], datos_elemento)
                              for datos_elemento in datos)
             setattr(cls, nombre_cache, elementos)
         return getattr(cls, nombre_cache)
 
     @classmethod
-    def get(cls, codigo=None, **kargs):
+    def get(cls, pk=None, **kargs):
         """Obtiene el primer elemento que cumpla con las condiciones."""
-        if codigo:
-            kargs['codigo'] = codigo
-        if kargs.keys() == ['codigo']:
-            codigo = kargs['codigo']
+        if pk:
+            kargs[cls._primary_key] = pk
+        if kargs.keys() == [cls._primary_key]:
+            pk = kargs[cls._primary_key]
             todos = cls._leer_json()
-            if codigo in todos:
-                return cls(**todos[codigo])
+            if pk in todos:
+                return cls(**todos[pk])
             else:
                 return None
         else:
@@ -95,15 +103,19 @@ class SerializadoJson(object):
                            reverse=invertir)
 
         return lista
-
+    
     def __eq__(self, other):
-        return self.codigo == other.codigo
-
+        same_pk = self.primary_key == other.primary_key
+        same_class = self.__class__ is other.__class__ 
+        return same_pk and same_class
+        
     def __repr__(self):
-        return '%s<%s>' % (str(self.__class__).split('.')[-1], self.codigo)
+        return '%s<%s>' % (self.__class__.__name__, self.primary_key)	
 
 class Persona(SerializadoJson):
     """Lista que agrupa personas."""
     nombre_plural = 'Personas'
+    
+    required_fields = ('nombre', 'apellido', 'edad', 'estatura', 'cod_equipo')
         
     
