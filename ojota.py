@@ -12,19 +12,19 @@ def cod_datos_actual(cod_datos):
 class SerializadoJson(object):
     """Clase con instancias listadas en un archivo json."""
     COD_DATOS_ACTUAL = ''
-    nombre_plural = 'SerializadosJson' # redefinir al heredar
+    plural_name = 'SerializadosJson' # redefinir al heredar
     json_en_raiz = True # redefinir al heredar
-    _primary_key = "codigo"
+    pk_field = "pk"
     required_fields = None
     
     @property
     def primary_key(self):
-        return getattr(self, self._primary_key)
+        return getattr(self, self.pk_field)
     
     def __init__(self, _pk=None, **kwargs):
         if self.required_fields is not None:
             _requeridos = list(self.required_fields)
-            _requeridos.append(self._primary_key)
+            _requeridos.append(self.pk_field)
             
             if not all([key in kwargs for key in _requeridos]):
                 raise AttributeError
@@ -38,7 +38,7 @@ class SerializadoJson(object):
            especificada en el parametro clave.
            Admite filtrar por mesa cuando los datos son de un json que esta en
            el subdirectorio de datos que una mesa usa."""
-        nombre_cache = '_cache_' + cls.nombre_plural
+        nombre_cache = '_cache_' + cls.plural_name
 
         if not cls.json_en_raiz and SerializadoJson.COD_DATOS_ACTUAL:
             nombre_cache += '_' + SerializadoJson.COD_DATOS_ACTUAL
@@ -48,14 +48,14 @@ class SerializadoJson(object):
             # archivo (ej: Persona -> Personas.json)
             if cls.json_en_raiz or not SerializadoJson.COD_DATOS_ACTUAL:
                 path_json = os.path.join(PATH_DATOS_JSON,
-                                         cls.nombre_plural + '.json')
+                                         cls.plural_name + '.json')
             else:
                 path_json = os.path.join(PATH_DATOS_JSON,
                                          SerializadoJson.COD_DATOS_ACTUAL,
-                                         cls.nombre_plural + '.json')
+                                         cls.plural_name + '.json')
 
             datos = json.load(open(path_json, 'r'))
-            elementos = dict((datos_elemento[cls._primary_key], datos_elemento)
+            elementos = dict((datos_elemento[cls.pk_field], datos_elemento)
                              for datos_elemento in datos)
             setattr(cls, nombre_cache, elementos)
         return getattr(cls, nombre_cache)
@@ -64,9 +64,9 @@ class SerializadoJson(object):
     def get(cls, pk=None, **kargs):
         """Obtiene el primer elemento que cumpla con las condiciones."""
         if pk:
-            kargs[cls._primary_key] = pk
-        if kargs.keys() == [cls._primary_key]:
-            pk = kargs[cls._primary_key]
+            kargs[cls.pk_field] = pk
+        if kargs.keys() == [cls.pk_field]:
+            pk = kargs[cls.pk_field]
             todos = cls._leer_json()
             if pk in todos:
                 return cls(**todos[pk])
@@ -135,9 +135,11 @@ class SerializadoJson(object):
     def __repr__(self):
         return '%s<%s>' % (self.__class__.__name__, self.primary_key)	
 
+
 class Persona(SerializadoJson):
     """Lista que agrupa personas."""
-    nombre_plural = 'Personas'
+    plural_name = 'Personas'
+    pk_field = 'codigo'
     
     required_fields = ('nombre', 'apellido', 'edad', 'estatura', 'cod_equipo')
         
