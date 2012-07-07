@@ -1,0 +1,10 @@
+[   
+    {
+        "codigo": 1,
+        "nombre": "Juan",
+        "apellido": "Perez",
+        "edad": 27,
+        "estatura": 1.79,
+        "cod_equipo": 1
+    }
+]
