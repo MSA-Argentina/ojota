@@ -71,6 +71,19 @@ class SerializadoJson(object):
                 return None
 
     @classmethod
+    def _objetize(cls, datos):
+        return [cls(**datos_elemento)
+                for datos_elemento in datos]
+
+    @classmethod
+    def _filter(cls, datos, filtros):
+        filtrados = [datos_elemento
+                     for datos_elemento in datos
+                     if all(datos_elemento[campo] == valor
+                            for campo, valor in filtros.items())]
+        return filtrados
+
+    @classmethod
     def _sort(cls, lista, campos_orden):
         campos_orden = [x.strip() for x in campos_orden.split(',')]
 
@@ -89,16 +102,16 @@ class SerializadoJson(object):
     @classmethod
     def all(cls, **kargs):
         """Obtiene la lista de elementos que cumplen las condiciones."""
-        todos = cls._leer_json().values()
+        elementos = cls._leer_json().values()
         campos_orden = None
         if 'sorted' in kargs:
             campos_orden = kargs['sorted']
             del kargs['sorted']
 
-        lista = [cls(**datos_elemento)
-                 for datos_elemento in todos
-                 if all(datos_elemento[campo] == valor
-                        for campo, valor in kargs.items())]
+        if kargs:
+            elementos = cls._filter(elementos, kargs)
+
+        lista = cls._objetize(elementos)
 
         if campos_orden:
             lista = cls._sort(lista, campos_orden)
