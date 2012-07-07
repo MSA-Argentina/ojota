@@ -1,0 +1,15 @@
+animal_1:
+    codigo: 1
+    nombre: Juan
+    apellido: Perez
+    edad: 27
+    estatura: 1.79
+    cod_equipo: 1
+
+animal_2:
+    codigo: 2
+    nombre: Pedro
+    apellido: Rodriguez
+    edad: 27
+    estatura: 1.79
+    cod_equipo: 1
