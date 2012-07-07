@@ -31,7 +31,19 @@ class Serializado(object):
 
         for key, val in kwargs.iteritems():
             setattr(self, key, val)
-
+    
+    def __get_attribute__(self, attr):
+        ret = None
+        if attr in self.__dict__:
+            if attr in self.relations:
+                cls = self.relations[attr]
+                ret = cls.get(self.__dict__[attr])
+            else:
+                ret = self.__dict__[attr]
+        else:
+            raise AttributeError
+        return ret
+        
     @classmethod
     def _leer_archivo(cls):
         """Lee las instancias desde json y arma un dict con la clave
