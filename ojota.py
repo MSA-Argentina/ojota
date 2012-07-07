@@ -7,7 +7,7 @@ PATH_DATOS = "datos"
 def cod_datos_actual(cod_datos):
     """Setea el juego de datos actual."""
     Serializado.COD_DATOS_ACTUAL = cod_datos
-    
+
 
 class Serializado(object):
     """Clase con instancias listadas en un archivo json."""
@@ -65,7 +65,7 @@ class Serializado(object):
     @classmethod
     def _leer_elementos_json(cls, filepath):
         datos = json.load(open(filepath + '.json', 'r'))
-        elementos = dict((datos_elemento['codigo'], datos_elemento)
+        elementos = dict((datos_elemento[cls.pk_field], datos_elemento)
                         for datos_elemento in datos)
 
         return elementos
@@ -75,7 +75,7 @@ class Serializado(object):
         datos = yaml.load(open(filepath + '.yaml', 'r'))
         elementos = {}
         for key, value in datos.items():
-            elementos[value['codigo']] = value
+            elementos[value[cls.pk_field]] = value
 
         return elementos
 
@@ -165,4 +165,6 @@ class Persona(Serializado):
 class Animal(Serializado):
     """Lista que agrupa animales."""
     nombre_plural = 'Animales'
+    pk_field = 'codigo'
+
 
