@@ -2,7 +2,7 @@ import json
 import yaml
 import os
 
-PATH_DATOS = "datos_json"
+PATH_DATOS = "datos"
 
 def cod_datos_actual(cod_datos):
     """Setea el juego de datos actual."""
@@ -33,16 +33,15 @@ class Serializado(object):
         for key, val in kwargs.iteritems():
             setattr(self, key, val)
 
-    def __get_attribute__(self, attr):
+    def __getattribute__(self, attr):
         ret = None
-        if attr in self.__dict__:
-            if attr in self.relations:
-                cls = self.relations[attr]
-                ret = cls.get(self.__dict__[attr])
-            else:
-                ret = self.__dict__[attr]
+        if attr in ['__dict__','__class__','relations']:
+            ret = super(Serializado, self).__getattribute__(attr)
+        elif attr in self.relations:
+            cls = self.relations[attr]
+            ret = cls.get(super(Serializado, self).__getattribute__(attr))
         else:
-            raise AttributeError
+            ret = super(Serializado, self).__getattribute__(attr)
         return ret
 
     @classmethod
@@ -99,7 +98,7 @@ class Serializado(object):
             kargs[cls.pk_field] = pk
         if kargs.keys() == [cls.pk_field]:
             pk = kargs[cls.pk_field]
-            todos = cls._leer_json()
+            todos = cls._leer_archivo()
             if pk in todos:
                 return cls(**todos[pk])
             else:
@@ -173,7 +172,7 @@ class Equipo(Serializado):
     plural_name = 'Equipos'
     pk_field = 'codigo'
 
-    required_fields = ('codigo')
+    required_fields = ('codigo',)
 
 
 class Persona(Serializado):
