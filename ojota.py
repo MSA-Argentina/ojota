@@ -7,7 +7,7 @@ PATH_DATOS_JSON = "datos_json"
 def cod_datos_actual(cod_datos):
     """Setea el juego de datos actual."""
     SerializadoJson.COD_DATOS_ACTUAL = cod_datos
-    
+
 
 class SerializadoJson(object):
     """Clase con instancias listadas en un archivo json."""
@@ -77,7 +77,14 @@ class SerializadoJson(object):
                         for campo, valor in kargs.items())]
 
         if campo_orden:
-            lista = sorted(lista, key=lambda e: getattr(e, campo_orden))
+            if campo_orden.startswith('-'):
+                invertir = True
+                campo_orden = campo_orden[1:]
+            else:
+                invertir = False
+            lista = sorted(lista,
+                           key=lambda e: getattr(e, campo_orden),
+                           reverse=invertir)
 
         return lista
 
@@ -86,7 +93,7 @@ class SerializadoJson(object):
 
     def __repr__(self):
         return '%s<%s>' % (str(self.__class__).split('.')[-1], self.codigo)
-        
+
 class Persona(SerializadoJson):
     """Lista que agrupa personas."""
     nombre_plural = 'Personas'
@@ -98,4 +105,4 @@ class Persona(SerializadoJson):
         self.edad = edad
         self.estatura = estatura
         self.cod_equipo = cod_equipo
-    
+
