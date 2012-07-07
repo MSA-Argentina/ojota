@@ -8,6 +8,22 @@
         "cod_equipo": 1
     },
     {
+        "codigo": 3,
+        "nombre": "Hernan",
+        "apellido": "Sanchez",
+        "edad": 30,
+        "estatura": 1.79,
+        "cod_equipo": 1
+    },
+    {
+        "codigo": 4,
+        "nombre": "Hernan",
+        "apellido": "Perez",
+        "edad": 40,
+        "estatura": 1.79,
+        "cod_equipo": 1
+    },
+    {
         "codigo": 2,
         "nombre": "Pedro",
         "apellido": "Rodriguez",
