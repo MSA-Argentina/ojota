@@ -110,11 +110,63 @@ class Serializado(object):
                 for datos_elemento in datos]
 
     @classmethod
+    def _test_expression(cls, expresion, valor, datos_elemento):
+        partes_expresion = expresion.split('__')
+        if len(partes_expresion) == 1:
+            campo = expresion
+            operacion = '='
+        else:
+            campo, operacion = partes_expresion
+
+        r = True
+        if operacion in ('=', 'exact'):
+            r = datos_elemento[campo] == valor
+        elif operacion == 'iexact':
+            r = str(datos_elemento[campo]).lower() == str(valor).lower()
+        elif operacion == 'contains':
+            r = valor in datos_elemento[campo]
+        elif operacion == 'icontains':
+            r = str(valor).lower() in str(datos_elemento[campo]).lower()
+        elif operacion == 'in':
+            r = datos_elemento[campo] in valor
+        elif operacion == 'gt':
+            r = datos_elemento[campo] > valor
+        elif operacion == 'gte':
+            r = datos_elemento[campo] >= valor
+        elif operacion == 'lt':
+            r = datos_elemento[campo] < valor
+        elif operacion == 'lte':
+            r = datos_elemento[campo] <= valor
+        elif operacion == 'startswith':
+            r = str(datos_elemento[campo]).startswith(str(valor))
+        elif operacion == 'istartswith':
+            r = str(datos_elemento[campo]).lower().startswith(str(valor).lower())
+        elif operacion == 'endswith':
+            r = str(datos_elemento[campo]).endswith(str(valor))
+        elif operacion == 'iendswith':
+            r = str(datos_elemento[campo]).lower().endswith(str(valor).lower())
+        elif operacion == 'range':
+            r = valor[0] <= datos_elemento[campo] <= valor[1]
+        elif operacion == 'isnull':
+            r = datos_elemento[campo] == None
+        elif operacion == 'ne':
+            r = datos_elemento[campo] != valor
+        # TODO date operations
+        # TODO regex operations
+        return r
+
+    @classmethod
     def _filter(cls, datos, filtros):
-        filtrados = [datos_elemento
-                     for datos_elemento in datos
-                     if all(datos_elemento[campo] == valor
-                            for campo, valor in filtros.items())]
+        filtrados = []
+        for datos_elemento in datos:
+            agregar = True
+            for expresion, valor in filtros.items():
+                if not cls._test_expression(expresion, valor, datos_elemento):
+                    agregar = False
+                    break
+            if agregar:
+                filtrados.append(datos_elemento)
+
         return filtrados
 
     @classmethod
