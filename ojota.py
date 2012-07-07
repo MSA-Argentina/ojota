@@ -4,6 +4,10 @@ import os
 
 PATH_DATOS_JSON = "datos_json"
 
+def cod_datos_actual(cod_datos):
+    """Setea el juego de datos actual."""
+    SerializadoJson.COD_DATOS_ACTUAL = cod_datos
+    
 
 class SerializadoJson(object):
     """Clase con instancias listadas en un archivo json."""
@@ -24,7 +28,7 @@ class SerializadoJson(object):
 
         if nombre_cache not in dir(cls):
             # se pluraliza el nombre de la clase para obtener el nombre del
-            # archivo (ej: Mesa -> Mesas.json)
+            # archivo (ej: Persona -> Personas.json)
             if cls.json_en_raiz or not SerializadoJson.COD_DATOS_ACTUAL:
                 path_json = os.path.join(PATH_DATOS_JSON,
                                          cls.nombre_plural + '.json')

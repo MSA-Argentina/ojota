@@ -6,5 +6,13 @@
         "edad": 27,
         "estatura": 1.79,
         "cod_equipo": 1
+    },
+    {
+        "codigo": 2,
+        "nombre": "Pedro",
+        "apellido": "Rodriguez",
+        "edad": 27,
+        "estatura": 1.79,
+        "cod_equipo": 1
     }
 ]
