@@ -15,6 +15,14 @@ class SerializadoJson(object):
     nombre_plural = 'SerializadosJson' # redefinir al heredar
     json_en_raiz = True # redefinir al heredar
 
+    def __init__(self, _pk=None, **kwargs):
+        if _pk is not None:
+            self.codigo = _pk
+        else:
+            for key, val in kwargs.iteritems():
+                setattr(self, key, val)
+            
+    
     @classmethod
     def _leer_json(cls):
         """Lee las instancias desde json y arma un dict con la clave
@@ -90,12 +98,5 @@ class SerializadoJson(object):
 class Persona(SerializadoJson):
     """Lista que agrupa personas."""
     nombre_plural = 'Personas'
-
-    def __init__(self, codigo, nombre, apellido, edad, estatura, cod_equipo):
-        self.codigo = codigo
-        self.nombre = nombre
-        self.apellido = apellido
-        self.edad = edad
-        self.estatura = estatura
-        self.cod_equipo = cod_equipo
+        
     
