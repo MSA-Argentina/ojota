@@ -17,6 +17,7 @@ class SerializadoJson(object):
     json_en_raiz = True # redefinir al heredar
     pk_field = "pk"
     required_fields = None
+    relations = {}  # {attr_name : class}
     
     @property
     def primary_key(self):
@@ -29,10 +30,22 @@ class SerializadoJson(object):
             
             if not all([key in kwargs for key in _requeridos]):
                 raise AttributeError
-
+            
         for key, val in kwargs.iteritems():
             setattr(self, key, val)
-            
+    
+    def __get_attribute__(self, attr):
+        ret = None
+        if attr in self.__dict__:
+            if attr in self.relations:
+                cls = self.relations[attr]
+                ret = cls.get(self.__dict__[attr])
+            else:
+                ret = self.__dict__[attr]
+        else:
+            raise AttributeError
+        return ret
+        
     @classmethod
     def _leer_json(cls):
         """Lee las instancias desde json y arma un dict con la clave
