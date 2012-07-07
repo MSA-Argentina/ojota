@@ -31,7 +31,7 @@ class Serializado(object):
 
         for key, val in kwargs.iteritems():
             setattr(self, key, val)
-    
+
     def __get_attribute__(self, attr):
         ret = None
         if attr in self.__dict__:
@@ -43,7 +43,7 @@ class Serializado(object):
         else:
             raise AttributeError
         return ret
-        
+
     @classmethod
     def _leer_archivo(cls):
         """Lee las instancias desde json y arma un dict con la clave
@@ -143,7 +143,7 @@ class Serializado(object):
     def all(cls, **kargs):
         """Obtiene la lista de elementos que cumplen las condiciones."""
         elementos = cls._leer_archivo().values()
-        campo_orden = None
+        campos_orden = None
         if 'sorted' in kargs:
             campos_orden = kargs['sorted']
             del kargs['sorted']
