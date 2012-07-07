@@ -8,7 +8,7 @@
         "cod_equipo": 1
     },
     {
-        "codigo": 3,
+        "codigo": 2,
         "nombre": "Hernan",
         "apellido": "Sanchez",
         "edad": 30,
@@ -16,7 +16,7 @@
         "cod_equipo": 1
     },
     {
-        "codigo": 4,
+        "codigo": 3,
         "nombre": "Hernan",
         "apellido": "Perez",
         "edad": 40,
@@ -24,7 +24,7 @@
         "cod_equipo": 1
     },
     {
-        "codigo": 2,
+        "codigo": 4,
         "nombre": "Pedro",
         "apellido": "Rodriguez",
         "edad": 27,
@@ -32,7 +32,7 @@
         "cod_equipo": 1
     },
     {
-        "codigo": 3,
+        "codigo": 5,
         "nombre": "Juan",
         "apellido": "Martinez",
         "edad": 25,
