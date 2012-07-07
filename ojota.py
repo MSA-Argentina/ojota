@@ -1,47 +1,66 @@
 import json
+import yaml
 import os
 
-
-PATH_DATOS_JSON = "datos_json"
+PATH_DATOS = "datos"
 
 def cod_datos_actual(cod_datos):
     """Setea el juego de datos actual."""
-    SerializadoJson.COD_DATOS_ACTUAL = cod_datos
+    Serializado.COD_DATOS_ACTUAL = cod_datos
     
 
-class SerializadoJson(object):
+class Serializado(object):
     """Clase con instancias listadas en un archivo json."""
     COD_DATOS_ACTUAL = ''
     nombre_plural = 'SerializadosJson' # redefinir al heredar
-    json_en_raiz = True # redefinir al heredar
+    datos_en_raiz = True # redefinir al heredar
 
     @classmethod
-    def _leer_json(cls):
+    def _leer_archivo(cls):
         """Lee las instancias desde json y arma un dict con la clave
            especificada en el parametro clave.
            Admite filtrar por mesa cuando los datos son de un json que esta en
            el subdirectorio de datos que una mesa usa."""
         nombre_cache = '_cache_' + cls.nombre_plural
 
-        if not cls.json_en_raiz and SerializadoJson.COD_DATOS_ACTUAL:
-            nombre_cache += '_' + SerializadoJson.COD_DATOS_ACTUAL
+        if not cls.datos_en_raiz and Serializado.COD_DATOS_ACTUAL:
+            nombre_cache += '_' + Serializado.COD_DATOS_ACTUAL
 
         if nombre_cache not in dir(cls):
             # se pluraliza el nombre de la clase para obtener el nombre del
             # archivo (ej: Persona -> Personas.json)
-            if cls.json_en_raiz or not SerializadoJson.COD_DATOS_ACTUAL:
-                path_json = os.path.join(PATH_DATOS_JSON,
-                                         cls.nombre_plural + '.json')
+            if cls.datos_en_raiz or not Serializado.COD_DATOS_ACTUAL:
+                filepath = os.path.join(PATH_DATOS,
+                                         cls.nombre_plural)
             else:
-                path_json = os.path.join(PATH_DATOS_JSON,
-                                         SerializadoJson.COD_DATOS_ACTUAL,
-                                         cls.nombre_plural + '.json')
+                filepath = os.path.join(PATH_DATOS,
+                                         Serializado.COD_DATOS_ACTUAL,
+                                         cls.nombre_plural)
 
-            datos = json.load(open(path_json, 'r'))
-            elementos = dict((datos_elemento['codigo'], datos_elemento)
-                             for datos_elemento in datos)
+            try:
+                elementos = cls._leer_elementos_json(filepath)
+            except IOError:
+                elementos = cls._leer_elementos_yaml(filepath)
+
             setattr(cls, nombre_cache, elementos)
         return getattr(cls, nombre_cache)
+
+    @classmethod
+    def _leer_elementos_json(cls, filepath):
+        datos = json.load(open(filepath + '.json', 'r'))
+        elementos = dict((datos_elemento['codigo'], datos_elemento)
+                        for datos_elemento in datos)
+
+        return elementos
+
+    @classmethod
+    def _leer_elementos_yaml(cls, filepath):
+        datos = yaml.load(open(filepath + '.yaml', 'r'))
+        elementos = {}
+        for key, value in datos.items():
+            elementos[value['codigo']] = value
+
+        return elementos
 
     @classmethod
     def get(cls, codigo=None, **kargs):
@@ -50,7 +69,7 @@ class SerializadoJson(object):
             kargs['codigo'] = codigo
         if kargs.keys() == ['codigo']:
             codigo = kargs['codigo']
-            todos = cls._leer_json()
+            todos = cls._leer_archivo()
             if codigo in todos:
                 return cls(**todos[codigo])
             else:
@@ -65,7 +84,7 @@ class SerializadoJson(object):
     @classmethod
     def all(cls, **kargs):
         """Obtiene la lista de elementos que cumplen las condiciones."""
-        todos = cls._leer_json().values()
+        todos = cls._leer_archivo().values()
         campo_orden = None
         if 'sorted' in kargs:
             campo_orden = kargs['sorted']
@@ -87,7 +106,7 @@ class SerializadoJson(object):
     def __repr__(self):
         return '%s<%s>' % (str(self.__class__).split('.')[-1], self.codigo)
         
-class Persona(SerializadoJson):
+class Persona(Serializado):
     """Lista que agrupa personas."""
     nombre_plural = 'Personas'
 
@@ -98,4 +117,15 @@ class Persona(SerializadoJson):
         self.edad = edad
         self.estatura = estatura
         self.cod_equipo = cod_equipo
-    
+
+class Animal(Serializado):
+    """Lista que agrupa animales."""
+    nombre_plural = 'Animales'
+
+    def __init__(self, codigo, nombre, apellido, edad, estatura, cod_equipo):
+        self.codigo = codigo
+        self.nombre = nombre
+        self.apellido = apellido
+        self.edad = edad
+        self.estatura = estatura
+        self.cod_equipo = cod_equipo
