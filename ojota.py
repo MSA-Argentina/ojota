@@ -18,7 +18,7 @@ def relation(attr_fk, to_class):
 class Serializado(object):
     """Clase con instancias listadas en un archivo json."""
     COD_DATOS_ACTUAL = ''
-    plural_name = 'SerializadosJson' # redefinir al heredar
+    plural_name = 'Serializado' # redefinir al heredar
     datos_en_raiz = True # redefinir al heredar
     pk_field = "pk"
     required_fields = None
@@ -63,8 +63,10 @@ class Serializado(object):
             try:
                 elementos = cls._leer_elementos_json(filepath)
             except IOError:
-                elementos = cls._leer_elementos_yaml(filepath)
-
+                try:
+                    elementos = cls._leer_elementos_yaml(filepath)
+                except IOError:
+                    pass
             setattr(cls, nombre_cache, elementos)
         return getattr(cls, nombre_cache)
 
@@ -119,38 +121,41 @@ class Serializado(object):
             campo, operacion = partes_expresion
 
         r = True
-        if operacion in ('=', 'exact'):
-            r = datos_elemento[campo] == valor
-        elif operacion == 'iexact':
-            r = str(datos_elemento[campo]).lower() == str(valor).lower()
-        elif operacion == 'contains':
-            r = valor in datos_elemento[campo]
-        elif operacion == 'icontains':
-            r = str(valor).lower() in str(datos_elemento[campo]).lower()
-        elif operacion == 'in':
-            r = datos_elemento[campo] in valor
-        elif operacion == 'gt':
-            r = datos_elemento[campo] > valor
-        elif operacion == 'gte':
-            r = datos_elemento[campo] >= valor
-        elif operacion == 'lt':
-            r = datos_elemento[campo] < valor
-        elif operacion == 'lte':
-            r = datos_elemento[campo] <= valor
-        elif operacion == 'startswith':
-            r = str(datos_elemento[campo]).startswith(str(valor))
-        elif operacion == 'istartswith':
-            r = str(datos_elemento[campo]).lower().startswith(str(valor).lower())
-        elif operacion == 'endswith':
-            r = str(datos_elemento[campo]).endswith(str(valor))
-        elif operacion == 'iendswith':
-            r = str(datos_elemento[campo]).lower().endswith(str(valor).lower())
-        elif operacion == 'range':
-            r = valor[0] <= datos_elemento[campo] <= valor[1]
-        elif operacion == 'isnull':
-            r = datos_elemento[campo] == None
-        elif operacion == 'ne':
-            r = datos_elemento[campo] != valor
+        try:
+            if operacion in ('=', 'exact'):
+                r = datos_elemento[campo] == valor
+            elif operacion == 'iexact':
+                r = str(datos_elemento[campo]).lower() == str(valor).lower()
+            elif operacion == 'contains':
+                r = valor in datos_elemento[campo]
+            elif operacion == 'icontains':
+                r = str(valor).lower() in str(datos_elemento[campo]).lower()
+            elif operacion == 'in':
+                r = datos_elemento[campo] in valor
+            elif operacion == 'gt':
+                r = datos_elemento[campo] > valor
+            elif operacion == 'gte':
+                r = datos_elemento[campo] >= valor
+            elif operacion == 'lt':
+                r = datos_elemento[campo] < valor
+            elif operacion == 'lte':
+                r = datos_elemento[campo] <= valor
+            elif operacion == 'startswith':
+                r = str(datos_elemento[campo]).startswith(str(valor))
+            elif operacion == 'istartswith':
+                r = str(datos_elemento[campo]).lower().startswith(str(valor).lower())
+            elif operacion == 'endswith':
+                r = str(datos_elemento[campo]).endswith(str(valor))
+            elif operacion == 'iendswith':
+                r = str(datos_elemento[campo]).lower().endswith(str(valor).lower())
+            elif operacion == 'range':
+                r = valor[0] <= datos_elemento[campo] <= valor[1]
+            elif operacion == 'ne':
+                r = datos_elemento[campo] != valor
+            else:
+                raise AttributeError("La operacion %s no existe" % operacion)
+        except KeyError:
+            raise AttributeError("No existe el campo %s" % campo)
         # TODO date operations
         # TODO regex operations
         return r
@@ -210,29 +215,6 @@ class Serializado(object):
         return same_pk and same_class
 
     def __repr__(self):
-        return '%s<%s>' % (self.__class__.__name__, self.primary_key)	
-
-
-class Equipo(Serializado):
-    """Lista que agrupa personas."""
-    plural_name = 'Equipos'
-    pk_field = 'codigo'
-
-    required_fields = ('codigo',)
-
-
-class Persona(Serializado):
-    """Lista que agrupa personas."""
-    plural_name = 'Personas'
-    pk_field = 'codigo'
-
-    required_fields = ('nombre', 'apellido', 'edad', 'estatura', 'cod_equipo')
-    equipo = relation('cod_equipo', Equipo)
-
-
-class Animal(Serializado):
-    """Lista que agrupa animales."""
-    nombre_plural = 'Animales'
-    pk_field = 'codigo'
+        return '%s<%s>' % (self.__class__.__name__, self.primary_key)
 
 
