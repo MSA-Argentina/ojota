@@ -1,4 +1,5 @@
-from ojota import Serializado, relation
+from ojota import Serializado, Relation
+
 
 class Equipo(Serializado):
     """Lista que agrupa personas."""
@@ -13,8 +14,8 @@ class Persona(Serializado):
     plural_name = 'Personas'
     pk_field = 'codigo'
 
-    required_fields = ('nombre', 'apellido', 'edad', 'estatura', 'cod_equipo')
-    equipo = relation('cod_equipo', Equipo)
+    #required_fields = ('nombre', 'apellido', 'edad', 'estatura', 'cod_equipo')
+    equipo = Relation('cod_equipo', Equipo, related_name='personas')
 
 
 class Animal(Serializado):

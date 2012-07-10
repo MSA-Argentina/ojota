@@ -8,15 +8,42 @@ def cod_datos_actual(cod_datos):
     """Setea el juego de datos actual."""
     Serializado.COD_DATOS_ACTUAL = cod_datos
 
-def relation(attr_fk, to_class):
-    def relation_method(self):
-        fk = getattr(self,attr_fk)
-        return to_class.get(fk)
-    return property(relation_method)
+class Relation(object):
+    def __init__(self, attr_fk, to_class, related_name=None):
+        self.attr_fk = attr_fk
+        self.to_class = to_class
+        self.related_name = related_name
+
+    def get_property(self):
+        def method(method_self):
+            fk = getattr(method_self, self.attr_fk)
+            return self.to_class.get(fk)
+        return property(method)
+
+    def set_reversed_property(self, from_class):
+        def method(method_self):
+            pk = method_self.primary_key
+            params = {self.attr_fk: pk}
+            return from_class.all(**params)
+
+        if self.related_name:
+            prop = property(method)
+            setattr(self.to_class, self.related_name, prop)
+
+
+class MetaSerializado(type):
+    def __init__(self, *args, **kwargs):
+        # no uso iteritems porque estoy modificando el __dict__
+        for attr, value in self.__dict__.items():
+            if isinstance(value, Relation):
+                value.set_reversed_property(self)
+                setattr(self, attr, value.get_property())
+        return super(MetaSerializado, self).__init__(*args, **kwargs)
 
 
 class Serializado(object):
     """Clase con instancias listadas en un archivo json."""
+    __metaclass__ = MetaSerializado
     COD_DATOS_ACTUAL = ''
     plural_name = 'Serializado' # redefinir al heredar
     datos_en_raiz = True # redefinir al heredar
@@ -216,5 +243,4 @@ class Serializado(object):
 
     def __repr__(self):
         return '%s<%s>' % (self.__class__.__name__, self.primary_key)
-
 
