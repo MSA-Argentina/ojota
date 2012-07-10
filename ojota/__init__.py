@@ -90,10 +90,8 @@ class Serializado(object):
             try:
                 elementos = cls._leer_elementos_json(filepath)
             except IOError:
-                try:
-                    elementos = cls._leer_elementos_yaml(filepath)
-                except IOError:
-                    pass
+                elementos = cls._leer_elementos_yaml(filepath)
+
             setattr(cls, nombre_cache, elementos)
         return getattr(cls, nombre_cache)
 
