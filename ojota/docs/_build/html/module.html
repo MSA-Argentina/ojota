@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Module Reference &mdash; Ojota 0.1.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Ojota 0.1.6 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to Ojota’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Ojota’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Ojota 0.1.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-reference">
+<h1>Module Reference<a class="headerlink" href="#module-reference" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="__init__.Relation">
+<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Relation</tt><big>(</big><em>attr_fk</em>, <em>to_class</em>, <em>related_name=None</em><big>)</big><a class="headerlink" href="#__init__.Relation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a relation to another object.</p>
+<dl class="method">
+<dt id="__init__.Relation.get_property">
+<tt class="descname">get_property</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Relation.get_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the property in which the relation will be referenced.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__init__.Relation.set_reversed_property">
+<tt class="descname">set_reversed_property</tt><big>(</big><em>from_class</em><big>)</big><a class="headerlink" href="#__init__.Relation.set_reversed_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the property in which the backwards relation will be
+referenced.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="__init__.MetaSerializado">
+<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">MetaSerializado</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.MetaSerializado" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metaclass For the serializer</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="__init__.Serializado">
+<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Serializado</tt><big>(</big><em>_pk=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.Serializado" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class to create instances of serialized data in the source files.</p>
+<dl class="method">
+<dt id="__init__.Serializado.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#__init__.Serializado.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the equality of two elements.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__init__.Serializado.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>_pk=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.Serializado.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="__init__.Serializado.__metaclass__">
+<tt class="descname">__metaclass__</tt><a class="headerlink" href="#__init__.Serializado.__metaclass__" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">MetaSerializado</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__init__.Serializado.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Serializado.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>String representation of the elements.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="__init__.Serializado.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#__init__.Serializado.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Serializado._filter">
+<em class="property">classmethod </em><tt class="descname">_filter</tt><big>(</big><em>data</em>, <em>filters</em><big>)</big><a class="headerlink" href="#__init__.Serializado._filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies filter to data.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>data &#8211; an iterable containing the data
+filters &#8211; a dictionary with the filters</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Serializado._objetize">
+<em class="property">classmethod </em><tt class="descname">_objetize</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#__init__.Serializado._objetize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the data into an element.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Serializado._read_file">
+<em class="property">classmethod </em><tt class="descname">_read_file</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Serializado._read_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the data form the file, makes a dictionary with the key
+specified in the key paramater. Allows to filter by subdirectories when
+the data is not on the root according to the data path.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Serializado._read_json_elements">
+<em class="property">classmethod </em><tt class="descname">_read_json_elements</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#__init__.Serializado._read_json_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the elements form a JSON file. Returns a dictionary containing
+the read data.</p>
+<p>Arguments:
+filepath &#8211; the path for the json file.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Serializado._read_yaml_elements">
+<em class="property">classmethod </em><tt class="descname">_read_yaml_elements</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#__init__.Serializado._read_yaml_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the elements form a YAML file. Returns a dictionary containing
+the read data.</p>
+<p>Arguments:
+filepath &#8211; the path for the yaml file.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Serializado._sort">
+<em class="property">classmethod </em><tt class="descname">_sort</tt><big>(</big><em>data_list</em>, <em>order_fields</em><big>)</big><a class="headerlink" href="#__init__.Serializado._sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort a list by a given field or field froups.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>data_list &#8211; a list with the data
+order_fields &#8211; a string with the order fields</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Serializado._test_expression">
+<em class="property">classmethod </em><tt class="descname">_test_expression</tt><big>(</big><em>expression</em>, <em>value</em>, <em>element_data</em><big>)</big><a class="headerlink" href="#__init__.Serializado._test_expression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds out if a value in a given field matches an expression.</p>
+<p>Arguments:
+expression &#8211; a string with the comparison expression. If the
+expression is a field name it will be compared with equal. In case that
+the field has &#8220;__&#8221; and an operation appended the it is compared with
+the appended expression. The availiable expressions allowed are: &#8220;=&#8221;,
+&#8220;exact&#8221;, &#8220;iexact&#8221;, &#8220;contains&#8221;, &#8220;icontains&#8221;, &#8220;in&#8221;, &#8220;gt&#8221;, &#8220;gte&#8221;, &#8220;lt&#8221;,
+&#8220;lte&#8221;, &#8220;startswith&#8221;, &#8220;istartswith&#8221;, &#8220;endswith&#8221;, &#8220;iendswith&#8221;, &#8220;range&#8221;
+and &#8220;ne&#8221;</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Serializado.all">
+<em class="property">classmethod </em><tt class="descname">all</tt><big>(</big><em>**kargs</em><big>)</big><a class="headerlink" href="#__init__.Serializado.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the elements that match the conditions.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Serializado.get">
+<em class="property">classmethod </em><tt class="descname">get</tt><big>(</big><em>pk=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#__init__.Serializado.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the first element that matches the conditions.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="__init__.Serializado.primary_key">
+<tt class="descname">primary_key</tt><a class="headerlink" href="#__init__.Serializado.primary_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retruns the primary key value.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Ojota&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/module.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Ojota’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Ojota 0.1.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012,  Felipe Lerena, Juan Pedro Fisanoti, Ezequiel Chan, Nicolas Sarubbi, Hernan Lozano, Nicolas Bases.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
