@@ -3,9 +3,9 @@ Module Reference
 
 .. autoclass:: __init__.Relation
     :members:
-.. autoclass:: __init__.MetaSerializado
+.. autoclass:: __init__.MetaOjota
     :members:
-.. autoclass:: __init__.Serializado
+.. autoclass:: __init__.Ojota
     :members:
     :private-members:
     :special-members:

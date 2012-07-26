@@ -51,7 +51,7 @@
 <h1>Module Reference<a class="headerlink" href="#module-reference" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="__init__.Relation">
-<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Relation</tt><big>(</big><em>attr_fk</em>, <em>to_class</em>, <em>related_name=None</em><big>)</big><a class="headerlink" href="#__init__.Relation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Relation</tt><big>(</big><em>attr_fk</em>, <em>to_class</em>, <em>related_name=None</em>, <em>ws_call=None</em><big>)</big><a class="headerlink" href="#__init__.Relation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a relation to another object.</p>
 <dl class="method">
 <dt id="__init__.Relation.get_property">
@@ -69,48 +69,48 @@ referenced.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="__init__.MetaSerializado">
-<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">MetaSerializado</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.MetaSerializado" title="Permalink to this definition">¶</a></dt>
-<dd><p>Metaclass For the serializer</p>
+<dt id="__init__.MetaOjota">
+<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">MetaOjota</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.MetaOjota" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metaclass for Ojota</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="__init__.Serializado">
-<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Serializado</tt><big>(</big><em>_pk=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.Serializado" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota">
+<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Ojota</tt><big>(</big><em>_pk=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.Ojota" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class to create instances of serialized data in the source files.</p>
 <dl class="method">
-<dt id="__init__.Serializado.__eq__">
-<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#__init__.Serializado.__eq__" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#__init__.Ojota.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare the equality of two elements.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="__init__.Serializado.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>_pk=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.Serializado.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>_pk=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.Ojota.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="__init__.Serializado.__metaclass__">
-<tt class="descname">__metaclass__</tt><a class="headerlink" href="#__init__.Serializado.__metaclass__" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">MetaSerializado</span></tt></p>
+<dt id="__init__.Ojota.__metaclass__">
+<tt class="descname">__metaclass__</tt><a class="headerlink" href="#__init__.Ojota.__metaclass__" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">MetaOjota</span></tt></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="__init__.Serializado.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Serializado.__repr__" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Ojota.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>String representation of the elements.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="__init__.Serializado.__weakref__">
-<tt class="descname">__weakref__</tt><a class="headerlink" href="#__init__.Serializado.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#__init__.Ojota.__weakref__" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Serializado._filter">
-<em class="property">classmethod </em><tt class="descname">_filter</tt><big>(</big><em>data</em>, <em>filters</em><big>)</big><a class="headerlink" href="#__init__.Serializado._filter" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota._filter">
+<em class="property">classmethod </em><tt class="descname">_filter</tt><big>(</big><em>data</em>, <em>filters</em><big>)</big><a class="headerlink" href="#__init__.Ojota._filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies filter to data.</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -120,22 +120,22 @@ filters &#8211; a dictionary with the filters</dd>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Serializado._objetize">
-<em class="property">classmethod </em><tt class="descname">_objetize</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#__init__.Serializado._objetize" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota._objetize">
+<em class="property">classmethod </em><tt class="descname">_objetize</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#__init__.Ojota._objetize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the data into an element.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Serializado._read_file">
-<em class="property">classmethod </em><tt class="descname">_read_file</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Serializado._read_file" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota._read_file">
+<em class="property">classmethod </em><tt class="descname">_read_file</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Ojota._read_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the data form the file, makes a dictionary with the key
 specified in the key paramater. Allows to filter by subdirectories when
 the data is not on the root according to the data path.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Serializado._read_json_elements">
-<em class="property">classmethod </em><tt class="descname">_read_json_elements</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#__init__.Serializado._read_json_elements" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota._read_json_elements">
+<em class="property">classmethod </em><tt class="descname">_read_json_elements</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#__init__.Ojota._read_json_elements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the elements form a JSON file. Returns a dictionary containing
 the read data.</p>
 <p>Arguments:
@@ -143,8 +143,8 @@ filepath &#8211; the path for the json file.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Serializado._read_yaml_elements">
-<em class="property">classmethod </em><tt class="descname">_read_yaml_elements</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#__init__.Serializado._read_yaml_elements" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota._read_yaml_elements">
+<em class="property">classmethod </em><tt class="descname">_read_yaml_elements</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#__init__.Ojota._read_yaml_elements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the elements form a YAML file. Returns a dictionary containing
 the read data.</p>
 <p>Arguments:
@@ -152,8 +152,8 @@ filepath &#8211; the path for the yaml file.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Serializado._sort">
-<em class="property">classmethod </em><tt class="descname">_sort</tt><big>(</big><em>data_list</em>, <em>order_fields</em><big>)</big><a class="headerlink" href="#__init__.Serializado._sort" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota._sort">
+<em class="property">classmethod </em><tt class="descname">_sort</tt><big>(</big><em>data_list</em>, <em>order_fields</em><big>)</big><a class="headerlink" href="#__init__.Ojota._sort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sort a list by a given field or field froups.</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -163,8 +163,8 @@ order_fields &#8211; a string with the order fields</dd>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Serializado._test_expression">
-<em class="property">classmethod </em><tt class="descname">_test_expression</tt><big>(</big><em>expression</em>, <em>value</em>, <em>element_data</em><big>)</big><a class="headerlink" href="#__init__.Serializado._test_expression" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota._test_expression">
+<em class="property">classmethod </em><tt class="descname">_test_expression</tt><big>(</big><em>expression</em>, <em>value</em>, <em>element_data</em><big>)</big><a class="headerlink" href="#__init__.Ojota._test_expression" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds out if a value in a given field matches an expression.</p>
 <p>Arguments:
 expression &#8211; a string with the comparison expression. If the
@@ -177,21 +177,21 @@ and &#8220;ne&#8221;</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Serializado.all">
-<em class="property">classmethod </em><tt class="descname">all</tt><big>(</big><em>**kargs</em><big>)</big><a class="headerlink" href="#__init__.Serializado.all" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota.all">
+<em class="property">classmethod </em><tt class="descname">all</tt><big>(</big><em>**kargs</em><big>)</big><a class="headerlink" href="#__init__.Ojota.all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all the elements that match the conditions.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Serializado.get">
-<em class="property">classmethod </em><tt class="descname">get</tt><big>(</big><em>pk=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#__init__.Serializado.get" title="Permalink to this definition">¶</a></dt>
+<dt id="__init__.Ojota.get">
+<em class="property">classmethod </em><tt class="descname">get</tt><big>(</big><em>pk=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#__init__.Ojota.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the first element that matches the conditions.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="__init__.Serializado.primary_key">
-<tt class="descname">primary_key</tt><a class="headerlink" href="#__init__.Serializado.primary_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retruns the primary key value.</p>
+<dt id="__init__.Ojota.primary_key">
+<tt class="descname">primary_key</tt><a class="headerlink" href="#__init__.Ojota.primary_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the primary key value.</p>
 </dd></dl>
 
 </dd></dl>
