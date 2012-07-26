@@ -14,43 +14,63 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
-
 import json
-import yaml
 import os
 
-PATH_DATOS = "datos"
+try:
+    import yaml
+except ImportError:
+    pass
 
-def cod_datos_actual(cod_datos):
-    """Setea el juego de datos actual."""
-    Serializado.COD_DATOS_ACTUAL = cod_datos
+
+DATA_SOURCE = "data"
+
+
+def current_data_code(data_code):
+    """Sets the current data path."""
+    Serializado.CURRENT_DATA_CODE = data_code
+
 
 class Relation(object):
+    """Adds a relation to another object."""
     def __init__(self, attr_fk, to_class, related_name=None):
+        """Constructor for the relation class
+        Arguments:
+            attr_fk -- a String with the foreign key attribute name
+            to_class -- the class that the relation makes reference to
+            related_name -- the name of the attribute for the backward relation
+                 Default None
+        """
         self.attr_fk = attr_fk
         self.to_class = to_class
         self.related_name = related_name
 
     def get_property(self):
-        def method(method_self):
+        """Returns the property in which the relation will be referenced."""
+        def _inner(method_self):
+            """Inner function to return the property for the relation."""
             fk = getattr(method_self, self.attr_fk)
             return self.to_class.get(fk)
-        return property(method)
+        return property(_inner)
 
     def set_reversed_property(self, from_class):
-        def method(method_self):
+        """Returns the property in which the backwards relation will be
+        referenced."""
+        def _inner(method_self):
+            """Inner function to return the property for the backwards
+            relation."""
             pk = method_self.primary_key
             params = {self.attr_fk: pk}
             return from_class.all(**params)
 
         if self.related_name:
-            prop = property(method)
+            prop = property(_inner)
             setattr(self.to_class, self.related_name, prop)
 
 
 class MetaSerializado(type):
+    """Metaclass For the serializer"""
     def __init__(self, *args, **kwargs):
-        # no uso iteritems porque estoy modificando el __dict__
         for attr, value in self.__dict__.items():
             if isinstance(value, Relation):
                 value.set_reversed_property(self)
@@ -59,19 +79,21 @@ class MetaSerializado(type):
 
 
 class Serializado(object):
-    """Clase con instancias listadas en un archivo json."""
+    """Base class to create instances of serialized data in the source files."""
     __metaclass__ = MetaSerializado
-    COD_DATOS_ACTUAL = ''
-    plural_name = 'Serializado' # redefinir al heredar
-    datos_en_raiz = True # redefinir al heredar
+    CURRENT_DATA_CODE = ''
+    plural_name = 'Serializado'
+    data_in_root = True
     pk_field = "pk"
     required_fields = None
 
     @property
     def primary_key(self):
+        """Retruns the primary key value."""
         return getattr(self, self.pk_field)
 
     def __init__(self, _pk=None, **kwargs):
+        """Constructor."""
         if self.required_fields is not None:
             _requeridos = list(self.required_fields)
             _requeridos.append(self.pk_field)
@@ -83,179 +105,211 @@ class Serializado(object):
             setattr(self, key, val)
 
     @classmethod
-    def _leer_archivo(cls):
-        """Lee las instancias desde json y arma un dict con la clave
-           especificada en el parametro clave.
-           Admite filtrar por mesa cuando los datos son de un json que esta en
-           el subdirectorio de datos que una mesa usa."""
-        nombre_cache = '_cache_' + cls.plural_name
+    def _read_file(cls):
+        """Reads the data form the file, makes a dictionary with the key
+        specified in the key paramater. Allows to filter by subdirectories when
+        the data is not on the root according to the data path."""
+        cache_name = '_cache_' + cls.plural_name
 
-        if not cls.datos_en_raiz and Serializado.COD_DATOS_ACTUAL:
-            nombre_cache += '_' + Serializado.COD_DATOS_ACTUAL
+        if not cls.data_in_root and Serializado.CURRENT_DATA_CODE:
+            cache_name += '_' + Serializado.CURRENT_DATA_CODE
 
-        if nombre_cache not in dir(cls):
-            # se pluraliza el nombre de la clase para obtener el nombre del
-            # archivo (ej: Persona -> Personas.json)
-            if cls.datos_en_raiz or not Serializado.COD_DATOS_ACTUAL:
-                filepath = os.path.join(PATH_DATOS,
+        if cache_name not in dir(cls):
+            if cls.data_in_root or not Serializado.CURRENT_DATA_CODE:
+                filepath = os.path.join(DATA_SOURCE,
                                          cls.plural_name)
             else:
-                filepath = os.path.join(PATH_DATOS,
-                                         Serializado.COD_DATOS_ACTUAL,
+                filepath = os.path.join(DATA_SOURCE,
+                                         Serializado.CURRENT_DATA_CODE,
                                          cls.plural_name)
-
             try:
-                elementos = cls._leer_elementos_json(filepath)
+                elements = cls._read_json_elements(filepath)
             except IOError:
-                elementos = cls._leer_elementos_yaml(filepath)
+                elements = cls._read_yaml_elements(filepath)
 
-            setattr(cls, nombre_cache, elementos)
-        return getattr(cls, nombre_cache)
-
-    @classmethod
-    def _leer_elementos_json(cls, filepath):
-        datos = json.load(open(filepath + '.json', 'r'))
-        elementos = dict((datos_elemento[cls.pk_field], datos_elemento)
-                        for datos_elemento in datos)
-
-        return elementos
+            setattr(cls, cache_name, elements)
+        return getattr(cls, cache_name)
 
     @classmethod
-    def _leer_elementos_yaml(cls, filepath):
-        datos = yaml.load(open(filepath + '.yaml', 'r'))
-        elementos = {}
+    def _read_json_elements(cls, filepath):
+        """Reads the elements form a JSON file. Returns a dictionary containing
+        the read data.
+
+        Arguments:
+        filepath -- the path for the json file.
+        """
+        data = json.load(open('%s.json' % filepath, 'r'))
+        elements = dict((element_data[cls.pk_field], element_data)
+                        for element_data in data)
+
+        return elements
+
+    @classmethod
+    def _read_yaml_elements(cls, filepath):
+        """Reads the elements form a YAML file. Returns a dictionary containing
+        the read data.
+
+        Arguments:
+        filepath -- the path for the yaml file.
+        """
+        datos = yaml.load(open('%s.yaml' % filepath, 'r'))
+        elements = {}
         for key, value in datos.items():
-            elementos[value[cls.pk_field]] = value
+            elements[value[cls.pk_field]] = value
 
-        return elementos
+        return elements
 
     @classmethod
     def get(cls, pk=None, **kargs):
-        """Obtiene el primer elemento que cumpla con las condiciones."""
+        """Returns the first element that matches the conditions."""
         if pk:
             kargs[cls.pk_field] = pk
         if kargs.keys() == [cls.pk_field]:
             pk = kargs[cls.pk_field]
-            todos = cls._leer_archivo()
-            if pk in todos:
-                return cls(**todos[pk])
+            all_elems = cls._read_file()
+            if pk in all_elems:
+                return cls(**all_elems[pk])
             else:
                 return None
         else:
-            resultado = cls.all(**kargs)
-            if resultado:
-                return resultado[0]
+            result = cls.all(**kargs)
+            if result:
+                return result[0]
             else:
                 return None
 
     @classmethod
-    def _objetize(cls, datos):
-        return [cls(**datos_elemento)
-                for datos_elemento in datos]
+    def _objetize(cls, data):
+        """Return the data into an element."""
+        return [cls(**element_data) for element_data in data]
 
     @classmethod
-    def _test_expression(cls, expresion, valor, datos_elemento):
-        partes_expresion = expresion.split('__')
-        if len(partes_expresion) == 1:
-            campo = expresion
-            operacion = '='
+    def _test_expression(cls, expression, value, element_data):
+        """Finds out if a value in a given field matches an expression.
+
+        Arguments:
+        expression -- a string with the comparison expression. If the
+        expression is a field name it will be compared with equal. In case that
+        the field has "__" and an operation appended the it is compared with
+        the appended expression. The availiable expressions allowed are: "=",
+        "exact", "iexact", "contains", "icontains", "in", "gt", "gte", "lt",
+        "lte", "startswith", "istartswith", "endswith", "iendswith", "range"
+        and "ne"
+        """
+        partes_expression = expression.split('__')
+        if len(partes_expression) == 1:
+            field = expression
+            operation = '='
         else:
-            campo, operacion = partes_expresion
+            field, operation = partes_expression
 
         r = True
         try:
-            if operacion in ('=', 'exact'):
-                r = datos_elemento[campo] == valor
-            elif operacion == 'iexact':
-                r = str(datos_elemento[campo]).lower() == str(valor).lower()
-            elif operacion == 'contains':
-                r = valor in datos_elemento[campo]
-            elif operacion == 'icontains':
-                r = str(valor).lower() in str(datos_elemento[campo]).lower()
-            elif operacion == 'in':
-                r = datos_elemento[campo] in valor
-            elif operacion == 'gt':
-                r = datos_elemento[campo] > valor
-            elif operacion == 'gte':
-                r = datos_elemento[campo] >= valor
-            elif operacion == 'lt':
-                r = datos_elemento[campo] < valor
-            elif operacion == 'lte':
-                r = datos_elemento[campo] <= valor
-            elif operacion == 'startswith':
-                r = str(datos_elemento[campo]).startswith(str(valor))
-            elif operacion == 'istartswith':
-                r = str(datos_elemento[campo]).lower().startswith(str(valor).lower())
-            elif operacion == 'endswith':
-                r = str(datos_elemento[campo]).endswith(str(valor))
-            elif operacion == 'iendswith':
-                r = str(datos_elemento[campo]).lower().endswith(str(valor).lower())
-            elif operacion == 'range':
-                r = valor[0] <= datos_elemento[campo] <= valor[1]
-            elif operacion == 'ne':
-                r = datos_elemento[campo] != valor
+            if operation in ('=', 'exact'):
+                r = element_data[field] == value
+            elif operation == 'iexact':
+                r = str(element_data[field]).lower() == str(value).lower()
+            elif operation == 'contains':
+                r = value in element_data[field]
+            elif operation == 'icontains':
+                r = str(value).lower() in str(element_data[field]).lower()
+            elif operation == 'in':
+                r = element_data[field] in value
+            elif operation == 'gt':
+                r = element_data[field] > value
+            elif operation == 'gte':
+                r = element_data[field] >= value
+            elif operation == 'lt':
+                r = element_data[field] < value
+            elif operation == 'lte':
+                r = element_data[field] <= value
+            elif operation == 'startswith':
+                r = str(element_data[field]).startswith(str(value))
+            elif operation == 'istartswith':
+                r = str(element_data[field]).lower().startswith(str(value).lower())
+            elif operation == 'endswith':
+                r = str(element_data[field]).endswith(str(value))
+            elif operation == 'iendswith':
+                r = str(element_data[field]).lower().endswith(str(value).lower())
+            elif operation == 'range':
+                r = value[0] <= element_data[field] <= value[1]
+            elif operation == 'ne':
+                r = element_data[field] != value
             else:
-                raise AttributeError("La operacion %s no existe" % operacion)
+                raise AttributeError("The operation %s does not exist" % operation)
         except KeyError:
-            raise AttributeError("No existe el campo %s" % campo)
+            raise AttributeError("The field %s does not exist" % field)
         # TODO date operations
         # TODO regex operations
         return r
 
     @classmethod
-    def _filter(cls, datos, filtros):
+    def _filter(cls, data, filters):
+        """Applies filter to data.
+
+        Arguments:
+            data -- an iterable containing the data
+            filters -- a dictionary with the filters
+        """
         filtrados = []
-        for datos_elemento in datos:
-            agregar = True
-            for expresion, valor in filtros.items():
-                if not cls._test_expression(expresion, valor, datos_elemento):
-                    agregar = False
+        for element_data in data:
+            add = True
+            for expression, value in filters.items():
+                if not cls._test_expression(expression, value, element_data):
+                    add = False
                     break
-            if agregar:
-                filtrados.append(datos_elemento)
+            if add:
+                filtrados.append(element_data)
 
         return filtrados
 
     @classmethod
-    def _sort(cls, lista, campos_orden):
-        campos_orden = [x.strip() for x in campos_orden.split(',')]
+    def _sort(cls, data_list, order_fields):
+        """Sort a list by a given field or field froups.
 
-        for campo_orden in reversed(campos_orden):
-            if campo_orden.startswith('-'):
-                invertir = True
-                campo_orden = campo_orden[1:]
+        Arguments:
+            data_list -- a list with the data
+            order_fields -- a string with the order fields
+        """
+        order_fields = [x.strip() for x in order_fields.split(',')]
+
+        for order_field in reversed(order_fields):
+            if order_field.startswith('-'):
+                reverse = True
+                order_field = order_field[1:]
             else:
-                invertir = False
+                reverse = False
 
-            lista = sorted(lista,
-                           key=lambda e: getattr(e, campo_orden),
-                           reverse=invertir)
-        return lista
+            data_list = sorted(data_list, key=lambda e: getattr(e, order_field),
+                               reverse=reverse)
+        return data_list
 
     @classmethod
     def all(cls, **kargs):
-        """Obtiene la lista de elementos que cumplen las condiciones."""
-        elementos = cls._leer_archivo().values()
-        campos_orden = None
+        """Returns all the elements that match the conditions."""
+        elements = cls._read_file().values()
+        order_fields = None
         if 'sorted' in kargs:
-            campos_orden = kargs['sorted']
+            order_fields = kargs['sorted']
             del kargs['sorted']
 
         if kargs:
-            elementos = cls._filter(elementos, kargs)
+            elements = cls._filter(elements, kargs)
 
-        lista = cls._objetize(elementos)
+        list_ = cls._objetize(elements)
 
-        if campos_orden:
-            lista = cls._sort(lista, campos_orden)
+        if order_fields:
+            list_ = cls._sort(list_, order_fields)
 
-        return lista
+        return list_
 
     def __eq__(self, other):
+        """Compare the equality of two elements."""
         same_pk = self.primary_key == other.primary_key
         same_class = self.__class__ is other.__class__
         return same_pk and same_class
 
     def __repr__(self):
+        """String representation of the elements."""
         return '%s<%s>' % (self.__class__.__name__, self.primary_key)
 

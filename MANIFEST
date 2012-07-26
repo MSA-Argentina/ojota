@@ -3,4 +3,3 @@ README.txt
 setup.py
 ojota/__init__.py
 ojota/ejemplos.py
-ojota/test.py
