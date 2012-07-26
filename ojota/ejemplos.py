@@ -15,10 +15,17 @@ This file is part of Ojota.
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from ojota import Serializado, Relation
+from ojota import Ojota, Relation
 
 
-class Equipo(Serializado):
+class Espectaculo(Ojota):
+
+    """Lista que agrupa espectaculos."""
+    plural_name = 'Espectaculos'
+    pk_field = 'id_espectaculo'
+
+
+class Equipo(Ojota):
     """Lista que agrupa personas."""
     plural_name = 'Equipos'
     pk_field = 'codigo'
@@ -26,7 +33,7 @@ class Equipo(Serializado):
     required_fields = ('codigo',)
 
 
-class Persona(Serializado):
+class Persona(Ojota):
     """Lista que agrupa personas."""
     plural_name = 'Personas'
     pk_field = 'codigo'
@@ -35,7 +42,7 @@ class Persona(Serializado):
     equipo = Relation('cod_equipo', Equipo, related_name='personas')
 
 
-class Animal(Serializado):
+class Animal(Ojota):
     """Lista que agrupa animales."""
     plural_name = 'Animales'
     pk_field = 'codigo'

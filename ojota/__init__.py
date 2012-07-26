@@ -14,44 +14,84 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
-import json
+
 import os
+import json
 
 try:
     import yaml
 except ImportError:
     pass
 
+from urllib2 import urlopen
+try:
+    from lepl.apps.rfc3696 import HttpUrl
+except:
+    pass
 
 DATA_SOURCE = "data"
+WSTIMEOUT = 5
 
 
 def current_data_code(data_code):
     """Sets the current data path."""
-    Serializado.CURRENT_DATA_CODE = data_code
+    Ojota.CURRENT_DATA_CODE = data_code
+
+
+class Cache(object):
+
+    def set(self, name, elems):
+        setattr(self, name, elems)
+
+    def get(self, name):
+        return getattr(self, name)
+
+    def __contains__(self, name):
+        return hasattr(self, name)
 
 
 class Relation(object):
     """Adds a relation to another object."""
-    def __init__(self, attr_fk, to_class, related_name=None):
+    def __init__(self, attr_fk, to_class, related_name=None, ws_call=None):
         """Constructor for the relation class
         Arguments:
             attr_fk -- a String with the foreign key attribute name
             to_class -- the class that the relation makes reference to
             related_name -- the name of the attribute for the backward relation
                  Default None
+            ws_call -- the name of the webservice command
         """
         self.attr_fk = attr_fk
         self.to_class = to_class
         self.related_name = related_name
+        self.ws_call = ws_call
 
     def get_property(self):
         """Returns the property in which the relation will be referenced."""
+        def _ws_inner(method_self):
+            """Inner function to return the property for the relation."""
+            _klass = self.to_class()
+            self._plural_name = _klass.__class__.plural_name
+            self._get_all_cmd = _klass.__class__.get_all_cmd
+            _klass.__class__.plural_name = "/".join(
+                                (method_self.plural_name,
+                                 getattr(method_self, self.attr_fk)))
+            _klass.__class__.get_all_cmd = self.ws_call
+            ret = _klass.all()
+            _klass.__class__.plural_name = self._plural_name
+            _klass.__class__.get_all_cmd = self._get_all_cmd
+            return ret
+
         def _inner(method_self):
             """Inner function to return the property for the relation."""
             fk = getattr(method_self, self.attr_fk)
             return self.to_class.get(fk)
-        return property(_inner)
+
+        if self.ws_call is not None:
+            ret = property(_ws_inner)
+        else:
+            ret = property(_inner)
+        return ret
 
     def set_reversed_property(self, from_class):
         """Returns the property in which the backwards relation will be
@@ -68,28 +108,30 @@ class Relation(object):
             setattr(self.to_class, self.related_name, prop)
 
 
-class MetaSerializado(type):
-    """Metaclass For the serializer"""
+class MetaOjota(type):
+    """Metaclass for Ojota"""
     def __init__(self, *args, **kwargs):
         for attr, value in self.__dict__.items():
             if isinstance(value, Relation):
                 value.set_reversed_property(self)
                 setattr(self, attr, value.get_property())
-        return super(MetaSerializado, self).__init__(*args, **kwargs)
+        return super(MetaOjota, self).__init__(*args, **kwargs)
 
 
-class Serializado(object):
-    """Base class to create instances of serialized data in the source files."""
-    __metaclass__ = MetaSerializado
+class Ojota(object):
+    """Base class to create instances of serialized data in the source files.
+    """
+    __metaclass__ = MetaOjota
     CURRENT_DATA_CODE = ''
-    plural_name = 'Serializado'
+    plural_name = 'Ojota'
     data_in_root = True
     pk_field = "pk"
     required_fields = None
+    cache_class = Cache
 
     @property
     def primary_key(self):
-        """Retruns the primary key value."""
+        """Returns the primary key value."""
         return getattr(self, self.pk_field)
 
     def __init__(self, _pk=None, **kwargs):
@@ -111,24 +153,30 @@ class Serializado(object):
         the data is not on the root according to the data path."""
         cache_name = '_cache_' + cls.plural_name
 
-        if not cls.data_in_root and Serializado.CURRENT_DATA_CODE:
-            cache_name += '_' + Serializado.CURRENT_DATA_CODE
+        if not hasattr(cls, '__cache__'):
+            cls.__cache__ = cls.cache_class()
 
-        if cache_name not in dir(cls):
-            if cls.data_in_root or not Serializado.CURRENT_DATA_CODE:
+        if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
+            cache_name += '_' + Ojota.CURRENT_DATA_CODE
+
+        if cache_name not in cls.__cache__:
+            if cls.data_in_root or not Ojota.CURRENT_DATA_CODE:
                 filepath = os.path.join(DATA_SOURCE,
                                          cls.plural_name)
             else:
                 filepath = os.path.join(DATA_SOURCE,
-                                         Serializado.CURRENT_DATA_CODE,
+                                         Ojota.CURRENT_DATA_CODE,
                                          cls.plural_name)
-            try:
+            if os.path.exists(filepath + '.json'):
                 elements = cls._read_json_elements(filepath)
-            except IOError:
+            elif os.path.exists(filepath + '.yaml'):
                 elements = cls._read_yaml_elements(filepath)
-
-            setattr(cls, cache_name, elements)
-        return getattr(cls, cache_name)
+            elif cls._validate_url(filepath):
+                elements = cls._read_ws_elements(url=filepath)
+            else:
+                raise Exception("Unknown datasource.")
+            cls.__cache__.set(name=cache_name, elems=elements)
+        return cls.__cache__.get(cache_name)
 
     @classmethod
     def _read_json_elements(cls, filepath):
@@ -157,6 +205,15 @@ class Serializado(object):
         for key, value in datos.items():
             elements[value[cls.pk_field]] = value
 
+        return elements
+
+    @classmethod
+    def _read_ws_elements(cls, url):
+        _url = url + cls.get_all_cmd
+        data = urlopen(_url, timeout=WSTIMEOUT).read()
+        data = json.loads(data)
+        elements = dict((element_data[cls.pk_field], element_data)
+                        for element_data in data)
         return elements
 
     @classmethod
@@ -226,17 +283,20 @@ class Serializado(object):
             elif operation == 'startswith':
                 r = str(element_data[field]).startswith(str(value))
             elif operation == 'istartswith':
-                r = str(element_data[field]).lower().startswith(str(value).lower())
+                r = str(element_data[field]).lower().startswith(
+                                                            str(value).lower())
             elif operation == 'endswith':
                 r = str(element_data[field]).endswith(str(value))
             elif operation == 'iendswith':
-                r = str(element_data[field]).lower().endswith(str(value).lower())
+                r = str(element_data[field]).lower().endswith(
+                                                            str(value).lower())
             elif operation == 'range':
                 r = value[0] <= element_data[field] <= value[1]
             elif operation == 'ne':
                 r = element_data[field] != value
             else:
-                raise AttributeError("The operation %s does not exist" % operation)
+                raise AttributeError("The operation %s does not exist" %
+                                      operation)
         except KeyError:
             raise AttributeError("The field %s does not exist" % field)
         # TODO date operations
@@ -280,8 +340,8 @@ class Serializado(object):
             else:
                 reverse = False
 
-            data_list = sorted(data_list, key=lambda e: getattr(e, order_field),
-                               reverse=reverse)
+            data_list = sorted(data_list, key=lambda e:
+                               getattr(e, order_field), reverse=reverse)
         return data_list
 
     @classmethod
@@ -313,3 +373,8 @@ class Serializado(object):
         """String representation of the elements."""
         return '%s<%s>' % (self.__class__.__name__, self.primary_key)
 
+    @classmethod
+    def _validate_url(cls, url):
+        validator = HttpUrl()
+        ret = validator(url)
+        return ret
