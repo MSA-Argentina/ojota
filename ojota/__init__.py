@@ -24,11 +24,8 @@ except ImportError:
     pass
 
 from urllib2 import urlopen
-try:
-    from lepl.apps.rfc3696 import HttpUrl
-except:
-    pass
 
+WEBSERVICE_DATASOURCE = True
 DATA_SOURCE = "data"
 WSTIMEOUT = 5
 
@@ -52,34 +49,45 @@ class Cache(object):
 
 class Relation(object):
     """Adds a relation to another object."""
-    def __init__(self, attr_fk, to_class, related_name=None, ws_call=None):
+    def __init__(self, attr_fk, to_class, related_name=None, ws_call=None,
+                  plural_name=None):
         """Constructor for the relation class
         Arguments:
             attr_fk -- a String with the foreign key attribute name
             to_class -- the class that the relation makes reference to
             related_name -- the name of the attribute for the backward relation
-                 Default None
+                             Default None
             ws_call -- the name of the webservice command
+            plural_name -- basename of ws_call, only needed if plural_name 
+                           should be changed.
         """
         self.attr_fk = attr_fk
         self.to_class = to_class
         self.related_name = related_name
         self.ws_call = ws_call
+        self.plural_name = plural_name
 
     def get_property(self):
         """Returns the property in which the relation will be referenced."""
         def _ws_inner(method_self):
             """Inner function to return the property for the relation."""
             _klass = self.to_class()
-            self._plural_name = _klass.__class__.plural_name
-            self._get_all_cmd = _klass.__class__.get_all_cmd
-            _klass.__class__.plural_name = "/".join(
-                                (method_self.plural_name,
-                                 getattr(method_self, self.attr_fk)))
-            _klass.__class__.get_all_cmd = self.ws_call
-            ret = _klass.all()
-            _klass.__class__.plural_name = self._plural_name
-            _klass.__class__.get_all_cmd = self._get_all_cmd
+            self.__plural_name = _klass.__class__.plural_name
+            self.__get_all_cmd = _klass.__class__.get_all_cmd
+            if self.plural_name is not None:
+                plural_name = self.plural_name
+            else:
+                plural_name = method_self.plural_name
+            if not self.ws_call:
+                _klass.__class__.get_all_cmd = self.ws_call
+                ret = _klass.get(getattr(method_self, self.attr_fk))
+            else:
+                _klass.__class__.plural_name = "/".join(
+                            (plural_name, getattr(method_self, self.attr_fk)))
+                _klass.__class__.get_all_cmd = self.ws_call
+                ret = _klass.all()
+            _klass.__class__.plural_name = self.__plural_name
+            _klass.__class__.get_all_cmd = self.__get_all_cmd
             return ret
 
         def _inner(method_self):
@@ -147,9 +155,9 @@ class Ojota(object):
             setattr(self, key, val)
 
     @classmethod
-    def _read_file(cls):
-        """Reads the data form the file, makes a dictionary with the key
-        specified in the key paramater. Allows to filter by subdirectories when
+    def _read_all_from_datasource(cls):
+        """Reads the data from the datasource, makes a dictionary with the key
+        specified in the key parameter. Allows to filter by subdirectories when
         the data is not on the root according to the data path."""
         cache_name = '_cache_' + cls.plural_name
 
@@ -171,12 +179,43 @@ class Ojota(object):
                 elements = cls._read_json_elements(filepath)
             elif os.path.exists(filepath + '.yaml'):
                 elements = cls._read_yaml_elements(filepath)
-            elif cls._validate_url(filepath):
+            elif WEBSERVICE_DATASOURCE:
                 elements = cls._read_ws_elements(url=filepath)
             else:
                 raise Exception("Unknown datasource.")
             cls.__cache__.set(name=cache_name, elems=elements)
         return cls.__cache__.get(cache_name)
+
+    @classmethod
+    def _read_item_from_datasource(cls, pk):
+        """Reads the data form the datasource if support index search."""
+        cache_name = '_cache_' + cls.plural_name
+
+        if not hasattr(cls, '__cache__'):
+            cls.__cache__ = cls.cache_class()
+
+        if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
+            cache_name += '_' + Ojota.CURRENT_DATA_CODE
+
+        if cls.data_in_root or not Ojota.CURRENT_DATA_CODE:
+            filepath = os.path.join(DATA_SOURCE,
+                                     cls.plural_name)
+        else:
+            filepath = os.path.join(DATA_SOURCE,
+                                     Ojota.CURRENT_DATA_CODE,
+                                     cls.plural_name)
+        if WEBSERVICE_DATASOURCE:
+            element = cls._read_ws_element(url=filepath, pk=pk)
+        else:
+            raise Exception("Unknown datasource.")
+
+        if cache_name in cls.__cache__:
+            __cache__ = cls.__cache__.get(cache_name)
+            __cache__.update(element)
+            cls.__cache__.set(name=cache_name, elems=__cache__)
+        else:
+            __cache__ = element
+        return __cache__[pk]
 
     @classmethod
     def _read_json_elements(cls, filepath):
@@ -217,23 +256,12 @@ class Ojota(object):
         return elements
 
     @classmethod
-    def get(cls, pk=None, **kargs):
-        """Returns the first element that matches the conditions."""
-        if pk:
-            kargs[cls.pk_field] = pk
-        if kargs.keys() == [cls.pk_field]:
-            pk = kargs[cls.pk_field]
-            all_elems = cls._read_file()
-            if pk in all_elems:
-                return cls(**all_elems[pk])
-            else:
-                return None
-        else:
-            result = cls.all(**kargs)
-            if result:
-                return result[0]
-            else:
-                return None
+    def _read_ws_element(cls, url, pk):
+        _url = "%s/%s%s" % (url, pk, cls.get_cmd)
+        data = urlopen(_url, timeout=WSTIMEOUT).read()
+        data = json.loads(data)
+        element = {data[cls.pk_field]: data}
+        return element
 
     @classmethod
     def _objetize(cls, data):
@@ -347,7 +375,7 @@ class Ojota(object):
     @classmethod
     def all(cls, **kargs):
         """Returns all the elements that match the conditions."""
-        elements = cls._read_file().values()
+        elements = cls._read_all_from_datasource().values()
         order_fields = None
         if 'sorted' in kargs:
             order_fields = kargs['sorted']
@@ -363,6 +391,29 @@ class Ojota(object):
 
         return list_
 
+    @classmethod
+    def get(cls, pk=None, **kargs):
+        """Returns the first element that matches the conditions."""
+        if pk:
+            kargs[cls.pk_field] = pk
+        if kargs.keys() == [cls.pk_field]:
+            pk = kargs[cls.pk_field]
+            if hasattr(cls, 'get_cmd'):
+                elem = cls._read_item_from_datasource(pk)
+                return cls._objetize([elem])[0]
+            else:
+                all_elems = cls._read_all_from_datasource()
+                if pk in all_elems:
+                    return cls(**all_elems[pk])
+                else:
+                    return None
+        else:
+            result = cls.all(**kargs)
+            if result:
+                return result[0]
+            else:
+                return None
+
     def __eq__(self, other):
         """Compare the equality of two elements."""
         same_pk = self.primary_key == other.primary_key
@@ -372,9 +423,3 @@ class Ojota(object):
     def __repr__(self):
         """String representation of the elements."""
         return '%s<%s>' % (self.__class__.__name__, self.primary_key)
-
-    @classmethod
-    def _validate_url(cls, url):
-        validator = HttpUrl()
-        ret = validator(url)
-        return ret
