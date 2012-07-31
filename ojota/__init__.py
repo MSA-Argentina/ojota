@@ -25,7 +25,7 @@ except ImportError:
 
 from urllib2 import urlopen
 
-WEBSERVICE_DATASOURCE = True
+WEBSERVICE_DATASOURCE = False
 DATA_SOURCE = "data"
 WSTIMEOUT = 5
 
