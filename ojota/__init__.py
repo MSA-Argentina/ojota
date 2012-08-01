@@ -111,10 +111,12 @@ class Relation(object):
 class MetaOjota(type):
     """Metaclass for Ojota"""
     def __init__(self, *args, **kwargs):
+        self.relations = {}
         for attr, value in self.__dict__.items():
             if isinstance(value, Relation):
                 value.set_reversed_property(self)
                 setattr(self, attr, value.get_property())
+                self.relations[value.attr_fk] = (value.to_class, attr)
         return super(MetaOjota, self).__init__(*args, **kwargs)
 
 
@@ -136,14 +138,15 @@ class Ojota(object):
 
     def __init__(self, _pk=None, **kwargs):
         """Constructor."""
+        self.fields = []
         if self.required_fields is not None:
             _requeridos = list(self.required_fields)
             _requeridos.append(self.pk_field)
 
             if not all([key in kwargs for key in _requeridos]):
                 raise AttributeError
-
         for key, val in kwargs.iteritems():
+            self.fields.append(key)
             setattr(self, key, val)
 
     @classmethod
