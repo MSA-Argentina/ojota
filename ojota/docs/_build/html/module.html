@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Module Reference &mdash; Ojota 0.1.6 documentation</title>
+    <title>Module Reference &mdash; Ojota 0.2.2 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.1.6',
+        VERSION:     '0.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Ojota 0.1.6 documentation" href="index.html" />
+    <link rel="top" title="Ojota 0.2.2 documentation" href="index.html" />
     <link rel="prev" title="Welcome to Ojota’s documentation!" href="index.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to Ojota’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Ojota 0.1.6 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Ojota 0.2.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,7 +51,7 @@
 <h1>Module Reference<a class="headerlink" href="#module-reference" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="__init__.Relation">
-<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Relation</tt><big>(</big><em>attr_fk</em>, <em>to_class</em>, <em>related_name=None</em>, <em>ws_call=None</em><big>)</big><a class="headerlink" href="#__init__.Relation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Relation</tt><big>(</big><em>attr_fk</em>, <em>to_class</em>, <em>related_name=None</em>, <em>ws_call=None</em>, <em>plural_name=None</em><big>)</big><a class="headerlink" href="#__init__.Relation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a relation to another object.</p>
 <dl class="method">
 <dt id="__init__.Relation.get_property">
@@ -126,11 +126,17 @@ filters &#8211; a dictionary with the filters</dd>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="__init__.Ojota._read_file">
-<em class="property">classmethod </em><tt class="descname">_read_file</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Ojota._read_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the data form the file, makes a dictionary with the key
-specified in the key paramater. Allows to filter by subdirectories when
+<dt id="__init__.Ojota._read_all_from_datasource">
+<em class="property">classmethod </em><tt class="descname">_read_all_from_datasource</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Ojota._read_all_from_datasource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the data from the datasource, makes a dictionary with the key
+specified in the key parameter. Allows to filter by subdirectories when
 the data is not on the root according to the data path.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="__init__.Ojota._read_item_from_datasource">
+<em class="property">classmethod </em><tt class="descname">_read_item_from_datasource</tt><big>(</big><em>pk</em><big>)</big><a class="headerlink" href="#__init__.Ojota._read_item_from_datasource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the data form the datasource if support index search.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -238,7 +244,7 @@ and &#8220;ne&#8221;</p>
         <li class="right" >
           <a href="index.html" title="Welcome to Ojota’s documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">Ojota 0.1.6 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Ojota 0.2.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

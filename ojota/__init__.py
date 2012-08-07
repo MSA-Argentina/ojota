@@ -58,7 +58,7 @@ class Relation(object):
             related_name -- the name of the attribute for the backward relation
                              Default None
             ws_call -- the name of the webservice command
-            plural_name -- basename of ws_call, only needed if plural_name 
+            plural_name -- basename of ws_call, only needed if plural_name
                            should be changed.
         """
         self.attr_fk = attr_fk
@@ -426,3 +426,6 @@ class Ojota(object):
     def __repr__(self):
         """String representation of the elements."""
         return '%s<%s>' % (self.__class__.__name__, self.primary_key)
+
+    def to_dict(self):
+        return dict([(field, getattr(self, field)) for field in self.fields])
