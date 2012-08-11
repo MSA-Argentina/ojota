@@ -14,12 +14,16 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
+import os
+
 from ojota import Ojota, Relation, set_data_source
 from ojota.sources import YAMLSource
 from ojota.examples.example_ws import Country
 from ojota.cache import Memcache
 
-set_data_source("/media/data/devel/pycamp_2012/ojota/ojota/examples/data")
+file_path = (os.path.dirname(os.path.abspath(__file__)))
+
+set_data_source(os.path.join(file_path, "data"))
 
 class Team(Ojota):
     plural_name = "Teams"
