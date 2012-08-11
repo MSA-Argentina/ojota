@@ -14,11 +14,12 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
-
 from ojota import Ojota, Relation, set_data_source
 from ojota.sources import YAMLSource
+from ojota.examples.example_ws import Country
+from ojota.cache import Memcache
 
-set_data_source("/media/data/devel/pycamp_2012/ojota/ojota/data")
+set_data_source("/media/data/devel/pycamp_2012/ojota/ojota/examples/data")
 
 class Team(Ojota):
     plural_name = "Teams"
@@ -35,6 +36,8 @@ class Person(Ojota):
     pk_field = "id"
     required_fields = ("id", "name", "address", "age", "team_id")
     team = Relation("team_id", Team)
+    country = Relation("country_id", Country)
+    cache  = Memcache()
 
     def __repr__(self):
         return self.name
