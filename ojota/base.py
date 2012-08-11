@@ -15,7 +15,9 @@ This file is part of Ojota.
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
 import ojota.sources
+
 from ojota.sources import JSONSource
+from ojota.cache import Cache
 
 
 def current_data_code(data_code):
@@ -24,17 +26,6 @@ def current_data_code(data_code):
 
 def set_data_source(data_path):
     ojota.sources._DATA_SOURCE = data_path
-
-
-class Cache(object):
-    def set(self, name, elems):
-        setattr(self, name, elems)
-
-    def get(self, name):
-        return getattr(self, name)
-
-    def __contains__(self, name):
-        return hasattr(self, name)
 
 
 class Relation(object):
@@ -127,7 +118,7 @@ class Ojota(object):
     data_in_root = True
     pk_field = "pk"
     required_fields = None
-    cache_class = Cache
+    cache = Cache()
     data_source = JSONSource()
 
     @property
@@ -155,37 +146,31 @@ class Ojota(object):
         the data is not on the root according to the data path."""
         cache_name = '_cache_' + cls.plural_name
 
-        if not hasattr(cls, '__cache__'):
-            cls.__cache__ = cls.cache_class()
-
         if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
             cache_name += '_' + Ojota.CURRENT_DATA_CODE
 
-        if cache_name not in cls.__cache__:
+        if cache_name not in cls.cache:
             elements = cls.data_source.fetch_elements(cls)
-            cls.__cache__.set(name=cache_name, elems=elements)
-        return cls.__cache__.get(cache_name)
+            cls.cache.set(name=cache_name, elems=elements)
+        return cls.cache.get(cache_name)
 
     @classmethod
     def _read_item_from_datasource(cls, pk):
         """Reads the data form the datasource if support index search."""
         cache_name = '_cache_' + cls.plural_name
 
-        if not hasattr(cls, '__cache__'):
-            cls.__cache__ = cls.cache_class()
-
         if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
             cache_name += '_' + Ojota.CURRENT_DATA_CODE
 
         element = cls.data_source.fetch_element(cls, pk)
 
-        if cache_name in cls.__cache__:
-            __cache__ = cls.__cache__.get(cache_name)
-            __cache__.update(element)
-            cls.__cache__.set(name=cache_name, elems=__cache__)
+        if cache_name in cls.cache:
+            cache = cls.cache.get(cache_name)
+            cache.update(element)
+            cls.cache.set(name=cache_name, elems=cache)
         else:
-            __cache__ = element
-        return __cache__[pk]
+            cache = element
+        return cache[pk]
 
     @classmethod
     def _objetize(cls, data):

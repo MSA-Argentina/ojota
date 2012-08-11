@@ -1,21 +1,50 @@
+"""
+This file is part of Ojota.
+
+    Ojota is free software: you can redistribute it and/or modify
+    it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Ojota is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU  Lesser General Public License
+    along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
+"""
 import os
 import json
 
 try:
     import yaml
+    yaml_imported = True
 except ImportError:
-    pass
+    yaml_imported = False
+
+try:
+    import requests
+    request_imported = True
+except ImportError:
+    request_imported = False
 
 from urllib2 import urlopen
 
 _DATA_SOURCE = "data"
 
 class Source(object):
+    def __init__(self, data_path=None):
+        self.data_path = data_path
     def _get_file_path(self, cls):
-        if cls.data_in_root or not cls.CURRENT_DATA_CODE:
-            filepath = os.path.join(_DATA_SOURCE, cls.plural_name)
+        if self.data_path is None:
+            data_path = _DATA_SOURCE
         else:
-            filepath = os.path.join(_DATA_SOURCE, cls.CURRENT_DATA_CODE,
+            data_path = self.data_path
+        if cls.data_in_root or not cls.CURRENT_DATA_CODE:
+            filepath = os.path.join(data_path, cls.plural_name)
+        else:
+            filepath = os.path.join(data_path, cls.CURRENT_DATA_CODE,
                                     cls.plural_name)
         return filepath
 
@@ -51,10 +80,13 @@ class YAMLSource(Source):
         Arguments:
         filepath -- the path for the json file.
         """
-        datos = yaml.load(open('%s.yaml' % filepath, 'r'))
-        elements = {}
-        for key, value in datos.items():
-            elements[value[cls.pk_field]] = value
+        if yaml_imported:
+            datos = yaml.load(open('%s.yaml' % filepath, 'r'))
+            elements = {}
+            for key, value in datos.items():
+                elements[value[cls.pk_field]] = value
+        else:
+            raise Exception("In order to use YAML sources you should install the 'PyYAML' package")
 
         return elements
 
@@ -62,9 +94,23 @@ class YAMLSource(Source):
 class WebServiceSource(Source):
     WSTIMEOUT = 5
 
-    def __init__(self, method="get", get_all_cmd="/all", get_cmd="/data"):
-        self.get_cmd = get_cmd
-        self.get_all_cmd = get_all_cmd
+    def __init__(self, data_path=None, method="get", get_all_cmd="/all",
+                  get_cmd="/data", user=None, password=None):
+        Source.__init__(self, data_path=data_path)
+
+        if request_imported:
+            self.get_cmd = get_cmd
+            self.get_all_cmd = get_all_cmd
+            try:
+                self.method = getattr(requests, method)
+            except AttributeError:
+                self.method = requests.get
+            if user is not None and password is not None:
+                self.auth = (user, password)
+            else:
+                self.auth = None
+        else:
+            raise Exception("In order to use Web Service sources you should install the 'requests' package")
 
     def read_elements(self, cls, url):
         """Reads the elements form a JSON file. Returns a dictionary containing
@@ -74,9 +120,8 @@ class WebServiceSource(Source):
         filepath -- the path for the json file.
         """
         _url = url + self.get_all_cmd
-        print "REQUESTING", _url
-        data = urlopen(_url, timeout=self.WSTIMEOUT).read()
-        data = json.loads(data)
+        response = self.method(_url, timeout=self.WSTIMEOUT, auth=self.auth)
+        data = response.json
         elements = dict((element_data[cls.pk_field], element_data)
                         for element_data in data)
         return elements
