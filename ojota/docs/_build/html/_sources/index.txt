@@ -8,13 +8,13 @@ Welcome to Ojota's documentation!
 
 Ojota is a ORM and flat file database engine.
 
-Ojota if Free Software! you can check the code at http://bitbucket.org/msa_team/ojota
+Ojota is Free Software! you can check the code at http://bitbucket.org/msa_team/ojota
 
 Supported data formats
 =======================
  * JSON
  * YAML
- * JSON throw web service
+ * JSON through web service
 
 Installation
 ============
@@ -43,11 +43,13 @@ Table of contents
    :maxdepth: 2
 
     Read the module documentation <module>
+    Read the examples documentation <examples>
 
 Optional dependencies
 =====================
  * pyyaml - To fecth the data from a file with YAML format
- * lepl - To fetch JSON form web sevice
+ * request - To fetch JSON form web sevice
+ * flask -- To run the example web service.
 
 Indices and tables
 ==================

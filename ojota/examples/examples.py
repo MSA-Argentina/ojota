@@ -22,8 +22,8 @@ from ojota.examples.example_ws import Country
 from ojota.cache import Memcache
 
 file_path = (os.path.dirname(os.path.abspath(__file__)))
-
 set_data_source(os.path.join(file_path, "data"))
+
 
 class Team(Ojota):
     plural_name = "Teams"

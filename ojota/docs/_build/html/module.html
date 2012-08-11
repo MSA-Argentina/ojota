@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Module Reference &mdash; Ojota 0.2.2 documentation</title>
+    <title>Examples &mdash; Ojota 0.3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.2.2',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,8 +25,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Ojota 0.2.2 documentation" href="index.html" />
-    <link rel="prev" title="Welcome to Ojota’s documentation!" href="index.html" /> 
+    <link rel="top" title="Ojota 0.3.0 documentation" href="index.html" />
+    <link rel="prev" title="Examples" href="" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +36,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="index.html" title="Welcome to Ojota’s documentation!"
+          <a href="#" title="Examples"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Ojota 0.2.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Ojota 0.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -47,161 +47,120 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-reference">
-<h1>Module Reference<a class="headerlink" href="#module-reference" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="__init__.Relation">
-<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Relation</tt><big>(</big><em>attr_fk</em>, <em>to_class</em>, <em>related_name=None</em>, <em>ws_call=None</em>, <em>plural_name=None</em><big>)</big><a class="headerlink" href="#__init__.Relation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds a relation to another object.</p>
-<dl class="method">
-<dt id="__init__.Relation.get_property">
-<tt class="descname">get_property</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Relation.get_property" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the property in which the relation will be referenced.</p>
-</dd></dl>
+  <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="examples-for-data-stored-locally">
+<h2>Examples for data stored locally<a class="headerlink" href="#examples-for-data-stored-locally" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This file is part of Ojota.</span>
 
-<dl class="method">
-<dt id="__init__.Relation.set_reversed_property">
-<tt class="descname">set_reversed_property</tt><big>(</big><em>from_class</em><big>)</big><a class="headerlink" href="#__init__.Relation.set_reversed_property" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the property in which the backwards relation will be
-referenced.</p>
-</dd></dl>
+<span class="sd">    Ojota is free software: you can redistribute it and/or modify</span>
+<span class="sd">    it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by</span>
+<span class="sd">    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">    (at your option) any later version.</span>
 
-</dd></dl>
+<span class="sd">    Ojota is distributed in the hope that it will be useful,</span>
+<span class="sd">    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">    GNU Lesser General Public License for more details.</span>
 
-<dl class="class">
-<dt id="__init__.MetaOjota">
-<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">MetaOjota</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.MetaOjota" title="Permalink to this definition">¶</a></dt>
-<dd><p>Metaclass for Ojota</p>
-</dd></dl>
+<span class="sd">    You should have received a copy of the GNU  Lesser General Public License</span>
+<span class="sd">    along with Ojota.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
-<dl class="class">
-<dt id="__init__.Ojota">
-<em class="property">class </em><tt class="descclassname">__init__.</tt><tt class="descname">Ojota</tt><big>(</big><em>_pk=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.Ojota" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class to create instances of serialized data in the source files.</p>
-<dl class="method">
-<dt id="__init__.Ojota.__eq__">
-<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#__init__.Ojota.__eq__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare the equality of two elements.</p>
-</dd></dl>
+<span class="kn">from</span> <span class="nn">ojota</span> <span class="kn">import</span> <span class="n">Ojota</span><span class="p">,</span> <span class="n">Relation</span><span class="p">,</span> <span class="n">set_data_source</span>
+<span class="kn">from</span> <span class="nn">ojota.sources</span> <span class="kn">import</span> <span class="n">YAMLSource</span>
+<span class="kn">from</span> <span class="nn">ojota.examples.example_ws</span> <span class="kn">import</span> <span class="n">Country</span>
+<span class="kn">from</span> <span class="nn">ojota.cache</span> <span class="kn">import</span> <span class="n">Memcache</span>
 
-<dl class="method">
-<dt id="__init__.Ojota.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>_pk=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#__init__.Ojota.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructor.</p>
-</dd></dl>
+<span class="n">file_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)))</span>
+<span class="n">set_data_source</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s">&quot;data&quot;</span><span class="p">))</span>
 
-<dl class="attribute">
-<dt id="__init__.Ojota.__metaclass__">
-<tt class="descname">__metaclass__</tt><a class="headerlink" href="#__init__.Ojota.__metaclass__" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">MetaOjota</span></tt></p>
-</dd></dl>
 
-<dl class="method">
-<dt id="__init__.Ojota.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Ojota.__repr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>String representation of the elements.</p>
-</dd></dl>
+<span class="k">class</span> <span class="nc">Team</span><span class="p">(</span><span class="n">Ojota</span><span class="p">):</span>
+    <span class="n">plural_name</span> <span class="o">=</span> <span class="s">&quot;Teams&quot;</span>
+    <span class="n">pk_field</span> <span class="o">=</span> <span class="s">&quot;id&quot;</span>
+    <span class="n">data_source</span> <span class="o">=</span> <span class="n">YAMLSource</span><span class="p">()</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;color&quot;</span><span class="p">)</span>
 
-<dl class="attribute">
-<dt id="__init__.Ojota.__weakref__">
-<tt class="descname">__weakref__</tt><a class="headerlink" href="#__init__.Ojota.__weakref__" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
-</dd></dl>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota._filter">
-<em class="property">classmethod </em><tt class="descname">_filter</tt><big>(</big><em>data</em>, <em>filters</em><big>)</big><a class="headerlink" href="#__init__.Ojota._filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies filter to data.</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd>data &#8211; an iterable containing the data
-filters &#8211; a dictionary with the filters</dd>
-</dl>
-</dd></dl>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota._objetize">
-<em class="property">classmethod </em><tt class="descname">_objetize</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#__init__.Ojota._objetize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the data into an element.</p>
-</dd></dl>
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">Ojota</span><span class="p">):</span>
+    <span class="n">plural_name</span> <span class="o">=</span> <span class="s">&quot;Persons&quot;</span>
+    <span class="n">pk_field</span> <span class="o">=</span> <span class="s">&quot;id&quot;</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;address&quot;</span><span class="p">,</span> <span class="s">&quot;age&quot;</span><span class="p">,</span> <span class="s">&quot;team_id&quot;</span><span class="p">)</span>
+    <span class="n">team</span> <span class="o">=</span> <span class="n">Relation</span><span class="p">(</span><span class="s">&quot;team_id&quot;</span><span class="p">,</span> <span class="n">Team</span><span class="p">)</span>
+    <span class="n">country</span> <span class="o">=</span> <span class="n">Relation</span><span class="p">(</span><span class="s">&quot;country_id&quot;</span><span class="p">,</span> <span class="n">Country</span><span class="p">)</span>
+    <span class="n">cache</span>  <span class="o">=</span> <span class="n">Memcache</span><span class="p">()</span>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota._read_all_from_datasource">
-<em class="property">classmethod </em><tt class="descname">_read_all_from_datasource</tt><big>(</big><big>)</big><a class="headerlink" href="#__init__.Ojota._read_all_from_datasource" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the data from the datasource, makes a dictionary with the key
-specified in the key parameter. Allows to filter by subdirectories when
-the data is not on the root according to the data path.</p>
-</dd></dl>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="examples-for-data-taken-through-web-service">
+<h2>Examples for data taken through Web Service<a class="headerlink" href="#examples-for-data-taken-through-web-service" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>includes web service example</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This file is part of Ojota.</span>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota._read_item_from_datasource">
-<em class="property">classmethod </em><tt class="descname">_read_item_from_datasource</tt><big>(</big><em>pk</em><big>)</big><a class="headerlink" href="#__init__.Ojota._read_item_from_datasource" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the data form the datasource if support index search.</p>
-</dd></dl>
+<span class="sd">    Ojota is free software: you can redistribute it and/or modify</span>
+<span class="sd">    it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by</span>
+<span class="sd">    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">    (at your option) any later version.</span>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota._read_json_elements">
-<em class="property">classmethod </em><tt class="descname">_read_json_elements</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#__init__.Ojota._read_json_elements" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the elements form a JSON file. Returns a dictionary containing
-the read data.</p>
-<p>Arguments:
-filepath &#8211; the path for the json file.</p>
-</dd></dl>
+<span class="sd">    Ojota is distributed in the hope that it will be useful,</span>
+<span class="sd">    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">    GNU Lesser General Public License for more details.</span>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota._read_yaml_elements">
-<em class="property">classmethod </em><tt class="descname">_read_yaml_elements</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#__init__.Ojota._read_yaml_elements" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the elements form a YAML file. Returns a dictionary containing
-the read data.</p>
-<p>Arguments:
-filepath &#8211; the path for the yaml file.</p>
-</dd></dl>
+<span class="sd">    You should have received a copy of the GNU  Lesser General Public License</span>
+<span class="sd">    along with Ojota.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota._sort">
-<em class="property">classmethod </em><tt class="descname">_sort</tt><big>(</big><em>data_list</em>, <em>order_fields</em><big>)</big><a class="headerlink" href="#__init__.Ojota._sort" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sort a list by a given field or field froups.</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd>data_list &#8211; a list with the data
-order_fields &#8211; a string with the order fields</dd>
-</dl>
-</dd></dl>
+<span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">dumps</span>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota._test_expression">
-<em class="property">classmethod </em><tt class="descname">_test_expression</tt><big>(</big><em>expression</em>, <em>value</em>, <em>element_data</em><big>)</big><a class="headerlink" href="#__init__.Ojota._test_expression" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds out if a value in a given field matches an expression.</p>
-<p>Arguments:
-expression &#8211; a string with the comparison expression. If the
-expression is a field name it will be compared with equal. In case that
-the field has &#8220;__&#8221; and an operation appended the it is compared with
-the appended expression. The availiable expressions allowed are: &#8220;=&#8221;,
-&#8220;exact&#8221;, &#8220;iexact&#8221;, &#8220;contains&#8221;, &#8220;icontains&#8221;, &#8220;in&#8221;, &#8220;gt&#8221;, &#8220;gte&#8221;, &#8220;lt&#8221;,
-&#8220;lte&#8221;, &#8220;startswith&#8221;, &#8220;istartswith&#8221;, &#8220;endswith&#8221;, &#8220;iendswith&#8221;, &#8220;range&#8221;
-and &#8220;ne&#8221;</p>
-</dd></dl>
+<span class="kn">from</span> <span class="nn">ojota</span> <span class="kn">import</span> <span class="n">Ojota</span>
+<span class="kn">from</span> <span class="nn">ojota.sources</span> <span class="kn">import</span> <span class="n">WebServiceSource</span>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota.all">
-<em class="property">classmethod </em><tt class="descname">all</tt><big>(</big><em>**kargs</em><big>)</big><a class="headerlink" href="#__init__.Ojota.all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns all the elements that match the conditions.</p>
-</dd></dl>
 
-<dl class="classmethod">
-<dt id="__init__.Ojota.get">
-<em class="property">classmethod </em><tt class="descname">get</tt><big>(</big><em>pk=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#__init__.Ojota.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the first element that matches the conditions.</p>
-</dd></dl>
+<span class="k">class</span> <span class="nc">Country</span><span class="p">(</span><span class="n">Ojota</span><span class="p">):</span>
+    <span class="n">plural_name</span> <span class="o">=</span> <span class="s">&quot;Countries&quot;</span>
+    <span class="n">pk_field</span> <span class="o">=</span> <span class="s">&quot;id&quot;</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">)</span>
+    <span class="n">data_source</span> <span class="o">=</span> <span class="n">WebServiceSource</span><span class="p">(</span><span class="s">&quot;http://localhost:8001&quot;</span><span class="p">)</span>
 
-<dl class="attribute">
-<dt id="__init__.Ojota.primary_key">
-<tt class="descname">primary_key</tt><a class="headerlink" href="#__init__.Ojota.primary_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the primary key value.</p>
-</dd></dl>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
-</dd></dl>
 
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/Countries/all&quot;</span><span class="p">)</span>
+    <span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/Countries/&lt;id_&gt;/data&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">all_countries</span><span class="p">(</span><span class="n">id_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Argentina&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Brazil&quot;</span><span class="p">}]</span>
+        <span class="k">if</span> <span class="n">id_</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">id_</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">ret</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">8001</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -210,9 +169,18 @@ and &#8220;ne&#8221;</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Examples</a><ul>
+<li><a class="reference internal" href="#examples-for-data-stored-locally">Examples for data stored locally</a></li>
+<li><a class="reference internal" href="#examples-for-data-taken-through-web-service">Examples for data taken through Web Service</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to Ojota&#8217;s documentation!</a></p>
+  <p class="topless"><a href=""
+                        title="previous chapter">Examples</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/module.txt"
@@ -242,9 +210,9 @@ and &#8220;ne&#8221;</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="index.html" title="Welcome to Ojota’s documentation!"
+          <a href="#" title="Examples"
              >previous</a> |</li>
-        <li><a href="index.html">Ojota 0.2.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Ojota 0.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

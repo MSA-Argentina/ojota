@@ -31,12 +31,25 @@ except ImportError:
 
 from urllib2 import urlopen
 
+
 _DATA_SOURCE = "data"
 
+
 class Source(object):
+    """Base class for all the data sources."""
     def __init__(self, data_path=None):
+        """Constructor for the Source class.
+
+        Arguments:
+        data_path -- the path where the data is located.
+        """
         self.data_path = data_path
     def _get_file_path(self, cls):
+        """Builds the path where the data will be located.
+
+        Arguments:
+            cls -- the class with the data.
+        """
         if self.data_path is None:
             data_path = _DATA_SOURCE
         else:
@@ -49,21 +62,33 @@ class Source(object):
         return filepath
 
     def fetch_elements(self, cls):
+        """Fetch the elements for a given class.
+
+        Arguments:
+            cls - the class with the data.
+        """
         data_path = self._get_file_path(cls)
         return self.read_elements(cls, data_path)
 
     def fetch_element(self, cls, pk):
+        """Fetch the elements for a given element of a class.
+
+        Arguments:
+            cls - the class with the data.
+            pk - the primary key of the given element.
+        """
         data_path = self._get_file_path(cls)
         return self.read_element(cls, data_path, pk)
 
 
 class JSONSource(Source):
+    """Source class for the data stored with JSON format"""
     def read_elements(self, cls, filepath):
         """Reads the elements form a JSON file. Returns a dictionary containing
         the read data.
 
         Arguments:
-        filepath -- the path for the json file.
+            filepath -- the path for the json file.
         """
         data = json.load(open('%s.json' % filepath, 'r'))
         elements = dict((element_data[cls.pk_field], element_data)
@@ -73,12 +98,16 @@ class JSONSource(Source):
 
 
 class YAMLSource(Source):
+    """Source class for the data stored with YAML format.
+
+    requires the PyYaml package to run.
+    """
     def read_elements(self, cls, filepath):
         """Reads the elements form a JSON file. Returns a dictionary containing
         the read data.
 
         Arguments:
-        filepath -- the path for the json file.
+            filepath -- the path for the json file.
         """
         if yaml_imported:
             datos = yaml.load(open('%s.yaml' % filepath, 'r'))
@@ -92,10 +121,28 @@ class YAMLSource(Source):
 
 
 class WebServiceSource(Source):
+    """Source class for the data stored with JSON format taken through a Web
+    Service.
+
+    requires the "request" package to run.
+    """
     WSTIMEOUT = 5
 
     def __init__(self, data_path=None, method="get", get_all_cmd="/all",
                   get_cmd="/data", user=None, password=None):
+        """Constructor for the WebServiceSource class.
+
+        Arguments:
+            data_path -- the path where the data is located.
+            method -- the http method that will be used witht the web service.
+            Defauts to "get".
+            get_all_cmd -- the WS command to fetch all the data. Defaults to "/all".
+            get_cmd -- the WS command to fetch one element. Defaults to "/data"
+            user -- the user name for the authentication. If not provided
+            the request will not use authentication.
+            password -- the password for the authentication. If not provided the
+            request will not use authentication.
+        """
         Source.__init__(self, data_path=data_path)
 
         if request_imported:
@@ -113,11 +160,12 @@ class WebServiceSource(Source):
             raise Exception("In order to use Web Service sources you should install the 'requests' package")
 
     def read_elements(self, cls, url):
-        """Reads the elements form a JSON file. Returns a dictionary containing
+        """Reads the elements form a WS request. Returns a dictionary containing
         the read data.
 
         Arguments:
-        filepath -- the path for the json file.
+            cls -- the data class.
+            url -- the path for the WS.
         """
         _url = url + self.get_all_cmd
         response = self.method(_url, timeout=self.WSTIMEOUT, auth=self.auth)
@@ -127,6 +175,14 @@ class WebServiceSource(Source):
         return elements
 
     def read_element(self, cls, url, pk):
+        """Reads one element elements form a JSON file. Returns a dictionary
+        containing the read data.
+
+        Arguments:
+            cls -- the data class.
+            url -- the path for the WS.
+            pk -- the primary key.
+        """
         _url = "%s/%s%s" % (url, pk, self.get_cmd)
         data = urlopen(_url, timeout=self.WSTIMEOUT).read()
         data = json.loads(data)
