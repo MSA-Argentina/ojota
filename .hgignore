@@ -1,0 +1,10 @@
+syntax: glob
+*.pyc
+
+.project
+.pydevproject
+.settings
+
+Ojota.egg-info
+build
+dist

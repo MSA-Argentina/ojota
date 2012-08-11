@@ -15,34 +15,26 @@ This file is part of Ojota.
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from ojota import Ojota, Relation
+from ojota import Ojota, Relation, set_data_source
+from ojota.sources import YAMLSource
+
+set_data_source("/media/data/devel/pycamp_2012/ojota/ojota/data")
+
+class Team(Ojota):
+    plural_name = "Teams"
+    pk_field = "id"
+    data_source = YAMLSource()
+    required_fields = ("id", "name", "color")
+
+    def __repr__(self):
+        return self.name
 
 
-class Espectaculo(Ojota):
+class Person(Ojota):
+    plural_name = "Persons"
+    pk_field = "id"
+    required_fields = ("id", "name", "address", "age", "team_id")
+    team = Relation("team_id", Team)
 
-    """Lista que agrupa espectaculos."""
-    plural_name = 'Espectaculos'
-    pk_field = 'id_espectaculo'
-
-
-class Equipo(Ojota):
-    """Lista que agrupa personas."""
-    plural_name = 'Equipos'
-    pk_field = 'codigo'
-
-    required_fields = ('codigo',)
-
-
-class Persona(Ojota):
-    """Lista que agrupa personas."""
-    plural_name = 'Personas'
-    pk_field = 'codigo'
-
-    #required_fields = ('nombre', 'apellido', 'edad', 'estatura', 'cod_equipo')
-    equipo = Relation('cod_equipo', Equipo, related_name='personas')
-
-
-class Animal(Ojota):
-    """Lista que agrupa animales."""
-    plural_name = 'Animales'
-    pk_field = 'codigo'
+    def __repr__(self):
+        return self.name

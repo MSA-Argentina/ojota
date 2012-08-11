@@ -1,0 +1,24 @@
+[
+    {
+        "id": "1",
+        "name": "Ezequiel",
+        "address": "Lujan 123",
+        "age": 25,
+        "height": 120,
+        "team_id": 1
+    },
+    {
+        "id": "2",
+        "name": "Matias",
+        "address": "Che Guevara 123",
+        "age": 35,
+        "team_id": 2
+    },
+    {
+        "id": "3",
+        "name": "Juan Carlos",
+        "address": "SPAM 123",
+        "age": 35,
+        "team_id": 1
+    }
+]
