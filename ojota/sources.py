@@ -171,7 +171,7 @@ class WebServiceSource(Source):
         _url = url + self.get_all_cmd
         verify = self.cert is not None
         response = self.method(_url, timeout=self.WSTIMEOUT, auth=self.auth,
-                               cert=self.cert, verify)
+                               cert=self.cert, verify=verify)
         data = response.json
         elements = dict((element_data[cls.pk_field], element_data)
                         for element_data in data)
