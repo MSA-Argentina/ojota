@@ -44,6 +44,7 @@ class Source(object):
         data_path -- the path where the data is located.
         """
         self.data_path = data_path
+
     def _get_file_path(self, cls):
         """Builds the path where the data will be located.
 
@@ -129,7 +130,8 @@ class WebServiceSource(Source):
     WSTIMEOUT = 5
 
     def __init__(self, data_path=None, method="get", get_all_cmd="/all",
-                  get_cmd="/data", user=None, password=None, cert=None):
+                  get_cmd="/data", user=None, password=None, cert=None,
+                  custom_call=None):
         """Constructor for the WebServiceSource class.
 
         Arguments:
@@ -148,6 +150,7 @@ class WebServiceSource(Source):
         if request_imported:
             self.get_cmd = get_cmd
             self.get_all_cmd = get_all_cmd
+            self.custom_call = custom_call if custom_call is not None else ""
             self.cert = cert
             try:
                 self.method = getattr(requests, method)
@@ -187,7 +190,9 @@ class WebServiceSource(Source):
             pk -- the primary key.
         """
         _url = "%s/%s%s" % (url, pk, self.get_cmd)
-        data = urlopen(_url, timeout=self.WSTIMEOUT).read()
-        data = json.loads(data)
+        verify = self.cert is not None
+        response = self.method(_url, timeout=self.WSTIMEOUT, auth=self.auth,
+                               cert=self.cert, verify=verify)
+        data = response.json
         element = {data[cls.pk_field]: data}
         return element

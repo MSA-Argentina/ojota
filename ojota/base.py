@@ -68,6 +68,61 @@ class Relation(object):
             self.to_class.backwards_relations.append(self.related_name)
 
 
+class WSRelation(Relation):
+    """Adds a relation to another object."""
+    def __init__(self, attr_fk, to_class, related_name=None, ws_call=None,
+                  plural_name=None):
+        """Constructor for the relation class
+        Arguments:
+            attr_fk -- a String with the foreign key attribute name
+            to_class -- the class that the relation makes reference to
+            related_name -- the name of the attribute for the backward relation
+                             Default None
+            ws_call -- the name of the webservice command
+            plural_name -- basename of ws_call, only needed if plural_name
+                           should be changed.
+        """
+        self.attr_fk = attr_fk
+        self.to_class = to_class
+        self.related_name = related_name
+        self.ws_call = ws_call
+        self.plural_name = plural_name
+
+    def get_property(self):
+        """Returns the property in which the relation will be referenced."""
+        def _ws_inner(method_self):
+            """Inner function to return the property for the relation."""
+            _klass = self.to_class()
+            self.__plural_name = _klass.__class__.plural_name
+            self.__get_all_cmd = _klass.data_source.get_all_cmd
+            if self.plural_name is not None:
+                plural_name = self.plural_name
+            else:
+                plural_name = method_self.plural_name
+            if not self.ws_call:
+                _klass.data_source.get_all_cmd = self.ws_call
+                ret = _klass.get(getattr(method_self, self.attr_fk))
+            else:
+                _klass.__class__.plural_name = "/".join(
+                            (plural_name, getattr(method_self, self.attr_fk)))
+                _klass.data_source.get_all_cmd = self.ws_call
+                ret = _klass.all()
+            _klass.__class__.plural_name = self.__plural_name
+            _klass.data_source.get_all_cmd = self.__get_all_cmd
+            return ret
+
+        def _inner(method_self):
+            """Inner function to return the property for the relation."""
+            fk = getattr(method_self, self.attr_fk)
+            return self.to_class.get(fk)
+
+        if self.ws_call is not None:
+            ret = property(_ws_inner)
+        else:
+            ret = property(_inner)
+        return ret
+
+
 class MetaOjota(type):
     """Metaclass for Ojota"""
     def __init__(self, *args, **kwargs):
@@ -77,7 +132,7 @@ class MetaOjota(type):
             if isinstance(value, Relation):
                 value.set_reversed_property(self)
                 setattr(self, attr, value.get_property())
-                self.relations[value.attr_fk] = (value.to_class, attr)
+                self.relations[value.attr_fk] = (value.to_class, attr, value)
         return super(MetaOjota, self).__init__(*args, **kwargs)
 
 
@@ -131,7 +186,6 @@ class Ojota(object):
     def _read_item_from_datasource(cls, pk):
         """Reads the data form the datasource if support index search."""
         cache_name = '_cache_' + cls.plural_name
-
         if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
             cache_name += '_' + Ojota.CURRENT_DATA_CODE
 
