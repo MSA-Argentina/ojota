@@ -129,7 +129,7 @@ class WebServiceSource(Source):
     WSTIMEOUT = 5
 
     def __init__(self, data_path=None, method="get", get_all_cmd="/all",
-                  get_cmd="/data", user=None, password=None):
+                  get_cmd="/data", user=None, password=None, cert=None):
         """Constructor for the WebServiceSource class.
 
         Arguments:
@@ -148,6 +148,7 @@ class WebServiceSource(Source):
         if request_imported:
             self.get_cmd = get_cmd
             self.get_all_cmd = get_all_cmd
+            self.cert = cert
             try:
                 self.method = getattr(requests, method)
             except AttributeError:
@@ -168,7 +169,9 @@ class WebServiceSource(Source):
             url -- the path for the WS.
         """
         _url = url + self.get_all_cmd
-        response = self.method(_url, timeout=self.WSTIMEOUT, auth=self.auth)
+        verify = self.cert is not None
+        response = self.method(_url, timeout=self.WSTIMEOUT, auth=self.auth,
+                               cert=self.cert, verify)
         data = response.json
         elements = dict((element_data[cls.pk_field], element_data)
                         for element_data in data)
