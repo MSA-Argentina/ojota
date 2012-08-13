@@ -37,17 +37,20 @@ class Cache(object):
 
 class Memcache(Cache):
     """Stores the cached data in memcache."""
-    def __init__(self, cache_location="127.0.0.1", port=11211, debug=None):
+    def __init__(self, cache_location="127.0.0.1", port=11211,
+                  expiration_time=None, debug=None):
         """Constructor for the Memcache class.
 
         Arguments:
             cache_location -- memcached URI. defaults to 127.0.0.1
             port -- memcached port. Defaults to 11211
+            expiration_time -- memcache expiration time
             debug -- activate memcache debug. Defaults to None
         """
         if memcache_imported:
             self._mc = memcache.Client(["%s:%d" % (cache_location, port)],
                                        debug=debug)
+            self.expiration_time = expiration_time
         else:
             raise Exception("In order to use Memcache as cache you should install the 'memcache' package")
 
@@ -58,7 +61,7 @@ class Memcache(Cache):
             name -- the cache name.
             elems -- the data to cache.
         """
-        self._mc.set(str(name), memcache.pickle.dumps(elems))
+        self._mc.set(str(name), memcache.pickle.dumps(elems), self.expiration_time)
 
     def get(self, name):
         """Gets the data from cache.
