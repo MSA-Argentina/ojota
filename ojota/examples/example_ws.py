@@ -21,8 +21,18 @@ except:
 
 from json import dumps
 
-from ojota import Ojota
+from ojota import Ojota, Relation
 from ojota.sources import WebServiceSource
+
+
+class Flag(Ojota):
+    plural_name = "Flags"
+    pk_field = "id"
+    required_fields = ("id", "description")
+    data_source = WebServiceSource("http://localhost:8001")
+
+    def __repr__(self):
+        return self.description
 
 
 class Country(Ojota):
@@ -30,6 +40,7 @@ class Country(Ojota):
     pk_field = "id"
     required_fields = ("id", "name")
     data_source = WebServiceSource("http://localhost:8001")
+    country = Relation("flag_id", Flag, "countries")
 
     def __repr__(self):
         return self.name
@@ -41,8 +52,19 @@ if __name__ == "__main__":
     @app.route("/Countries/all")
     @app.route("/Countries/<id_>/data")
     def all_countries(id_=None):
-        data = [{"id": "0", "name": "Argentina"},
-                {"id": "1", "name": "Brazil"}]
+        data = [{"id": "0", "name": "Argentina", "flag_id": "0"},
+                {"id": "1", "name": "Brazil", "flag_id": "1"}]
+        if id_ is None:
+            ret = dumps(data)
+        else:
+            ret = dumps(data[int(id_)])
+        return ret
+
+    @app.route("/Flags/all")
+    @app.route("/Flags/<id_>/data")
+    def all_flags(id_=None):
+        data = [{"id": "0", "description": "Blue and White"},
+                {"id": "1", "description": "Green, Yellow and Blue"}]
         if id_ is None:
             ret = dumps(data)
         else:

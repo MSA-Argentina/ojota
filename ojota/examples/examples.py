@@ -18,7 +18,7 @@ import os
 
 from ojota import Ojota, Relation, set_data_source
 from ojota.sources import YAMLSource
-from ojota.examples.example_ws import Country
+from ojota.examples.example_ws import Country, Flag
 from ojota.cache import Memcache
 
 file_path = (os.path.dirname(os.path.abspath(__file__)))
@@ -39,9 +39,9 @@ class Person(Ojota):
     plural_name = "Persons"
     pk_field = "id"
     required_fields = ("id", "name", "address", "age", "team_id")
-    team = Relation("team_id", Team)
-    country = Relation("country_id", Country)
-    cache  = Memcache()
+    team = Relation("team_id", Team, "persons")
+    country = Relation("country_id", Country, "persons")
+    #cache  = Memcache()
 
     def __repr__(self):
         return self.name
