@@ -156,12 +156,15 @@ class Ojota(object):
     def __init__(self, _pk=None, **kwargs):
         """Constructor."""
         self.fields = []
-        if self.required_fields is not None:
-            _requeridos = list(self.required_fields)
-            _requeridos.append(self.pk_field)
+        if self.required_fields is None:
+            self.required_fields = []
+        else:
+            self.required_fields = list(self.required_fields)
+        if self.pk_field not in self.required_fields:
+            self.required_fields.append(self.pk_field)
 
-            if not all([key in kwargs for key in _requeridos]):
-                raise AttributeError
+            if not all([key in kwargs for key in self.required_fields]):
+                raise AttributeError("The field '%s' is required" % key)
         for key, val in kwargs.iteritems():
             self.fields.append(key)
             setattr(self, key, val)
@@ -180,7 +183,9 @@ class Ojota(object):
         if cache_name not in cls.cache:
             elements = cls.data_source.fetch_elements(cls)
             cls.cache.set(name=cache_name, elems=elements)
-        return cls.cache.get(cache_name)
+        else:
+            elements = cls.cache.get(cache_name)
+        return elements
 
     @classmethod
     def _read_item_from_datasource(cls, pk):
@@ -190,7 +195,6 @@ class Ojota(object):
             cache_name += '_' + Ojota.CURRENT_DATA_CODE
 
         element = cls.data_source.fetch_element(cls, pk)
-
         if cache_name in cls.cache:
             cache = cls.cache.get(cache_name)
             cache.update(element)
@@ -217,12 +221,12 @@ class Ojota(object):
         "lte", "startswith", "istartswith", "endswith", "iendswith", "range"
         and "ne"
         """
-        partes_expression = expression.split('__')
-        if len(partes_expression) == 1:
+        expression_parts = expression.split('__')
+        if len(expression_parts) == 1:
             field = expression
             operation = '='
         else:
-            field, operation = partes_expression
+            field, operation = expression_parts
 
         r = True
         try:
@@ -330,25 +334,24 @@ class Ojota(object):
     @classmethod
     def get(cls, pk=None, **kargs):
         """Returns the first element that matches the conditions."""
-        if pk:
+        element = None
+        if pk is not None:
             kargs[cls.pk_field] = pk
         if kargs.keys() == [cls.pk_field]:
             pk = kargs[cls.pk_field]
             if hasattr(cls.data_source, 'get_cmd'):
                 elem = cls._read_item_from_datasource(pk)
-                return cls._objetize([elem])[0]
+                element = cls._objetize([elem])[0]
             else:
                 all_elems = cls._read_all_from_datasource()
                 if pk in all_elems:
-                    return cls(**all_elems[pk])
-                else:
-                    return None
+                    element = cls(**all_elems[pk])
         else:
             result = cls.all(**kargs)
             if result:
                 return result[0]
-            else:
-                return None
+
+        return element
 
     def __eq__(self, other):
         """Compare the equality of two elements."""

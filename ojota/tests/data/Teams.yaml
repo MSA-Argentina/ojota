@@ -1,0 +1,9 @@
+team_1:
+    id: "1"
+    name: "River Plate"
+    color: "red"
+
+team_2:
+    id: "2"
+    name: "Boca Juniors"
+    color: "blue"

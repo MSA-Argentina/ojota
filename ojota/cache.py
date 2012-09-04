@@ -4,6 +4,7 @@ try:
 except:
     memcache_imported = False
 
+
 class Cache(object):
     """The base Cache class.
     Stores the cached data in memory.

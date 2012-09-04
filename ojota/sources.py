@@ -81,6 +81,12 @@ class Source(object):
         data_path = self._get_file_path(cls)
         return self.read_element(cls, data_path, pk)
 
+    def read_elements(self, cls, filepath):
+        raise NotImplementedError
+
+    def read_element(self, cls, url, pk):
+        raise NotImplementedError
+
 
 class JSONSource(Source):
     """Source class for the data stored with JSON format"""
@@ -92,8 +98,11 @@ class JSONSource(Source):
             filepath -- the path for the json file.
         """
         data = json.load(open('%s.json' % filepath, 'r'))
-        elements = dict((element_data[cls.pk_field], element_data)
-                        for element_data in data)
+        try:
+            elements = dict((element_data[cls.pk_field], element_data)
+                            for element_data in data)
+        except KeyError:
+            raise AttributeError("Primary key was not found. Check that you have configured the class correctly. In case yopu have check your data source")
 
         return elements
 
