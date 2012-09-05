@@ -364,8 +364,6 @@ class ExpressionTest(TestCase):
                           "name__blah", "uan", {"name": "juan"})
 
 
-
-
 class RelationsTest(TestCase):
     def setUp(self):
         TestCase.setUp(self)
@@ -403,17 +401,3 @@ class RelationsTest(TestCase):
         self.assertEqual(2, len(persons))
         self.assertEqual('1', persons[0].id)
         self.assertEqual('3', persons[1].id)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
