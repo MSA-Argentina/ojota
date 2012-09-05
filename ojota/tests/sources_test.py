@@ -1,9 +1,11 @@
+import os
+
 from unittest.case import TestCase
 
 from ojota import Ojota
-from ojota.sources import Source, JSONSource, YAMLSource
 from ojota.base import set_data_source, current_data_code
-import os
+from ojota.sources import Source, JSONSource, YAMLSource
+
 
 class SourceTest(TestCase):
     def test_init(self):
@@ -73,6 +75,7 @@ class SourceTest(TestCase):
 
 class JsonSourceTest(TestCase):
     def test_read_elements(self):
+        """Testing the element loading from JSON."""
         file_path = (os.path.dirname(os.path.abspath(__file__)))
         set_data_source(os.path.join(file_path, "data"))
 
@@ -98,6 +101,7 @@ class JsonSourceTest(TestCase):
 
 class YAMLSourceTest(TestCase):
     def test_read_elements(self):
+        """Testing the element loading from YAML."""
         file_path = (os.path.dirname(os.path.abspath(__file__)))
         set_data_source(os.path.join(file_path, "data"))
 
@@ -111,13 +115,3 @@ class YAMLSourceTest(TestCase):
         source = YAMLSource()
         result = source.read_elements(Team, source._get_file_path(Team))
         self.assertEqual(expected, result)
-
-
-
-
-
-
-
-
-
-
