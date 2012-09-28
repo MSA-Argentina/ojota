@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Modules Reference &mdash; Ojota 0.3.3 documentation</title>
+    <title>Modules Reference &mdash; Ojota 0.4.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.3.3',
+        VERSION:     '0.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Ojota 0.3.3 documentation" href="index.html" />
+    <link rel="top" title="Ojota 0.4.0 documentation" href="index.html" />
     <link rel="prev" title="Examples" href="module.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="module.html" title="Examples"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Ojota 0.3.3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Ojota 0.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -172,6 +172,12 @@ and &#8220;ne&#8221;</p>
 <dd><p>Returns all the elements that match the conditions.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="base.Ojota.dump_values">
+<tt class="descname">dump_values</tt><big>(</big><em>new_data=None</em><big>)</big><a class="headerlink" href="#base.Ojota.dump_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the data into a file.</p>
+</dd></dl>
+
 <dl class="classmethod">
 <dt id="base.Ojota.get">
 <em class="property">classmethod </em><tt class="descname">get</tt><big>(</big><em>pk=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#base.Ojota.get" title="Permalink to this definition">¶</a></dt>
@@ -182,6 +188,18 @@ and &#8220;ne&#8221;</p>
 <dt id="base.Ojota.primary_key">
 <tt class="descname">primary_key</tt><a class="headerlink" href="#base.Ojota.primary_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the primary key value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="base.Ojota.save">
+<tt class="descname">save</tt><big>(</big><big>)</big><a class="headerlink" href="#base.Ojota.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save function for an object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="base.Ojota.update">
+<tt class="descname">update</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#base.Ojota.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the given values.</p>
 </dd></dl>
 
 </dd></dl>
@@ -236,6 +254,17 @@ pk - the primary key of the given element.</dd>
 <dl class="docutils">
 <dt>Arguments:</dt>
 <dd>cls - the class with the data.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sources.Source.save">
+<tt class="descname">save</tt><big>(</big><em>cls</em>, <em>data</em><big>)</big><a class="headerlink" href="#sources.Source.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch the elements for a given element of a class.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>cls - the class with the data.
+pk - the primary key of the given element.</dd>
 </dl>
 </dd></dl>
 
@@ -497,7 +526,7 @@ elems &#8211; the data to cache.</dd>
         <li class="right" >
           <a href="module.html" title="Examples"
              >previous</a> |</li>
-        <li><a href="index.html">Ojota 0.3.3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Ojota 0.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
