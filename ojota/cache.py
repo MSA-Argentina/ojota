@@ -35,6 +35,9 @@ class Cache(object):
         has_data = hasattr(self, name)
         return has_data
 
+    def clear(self, name):
+        return delattr(self, name)
+
 
 class Memcache(Cache):
     """Stores the cached data in memcache."""

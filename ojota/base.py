@@ -169,16 +169,19 @@ class Ojota(object):
             self.fields.append(key)
             setattr(self, key, val)
 
+    @classmethod
+    def get_cache_name(cls):
+        cache_name = '_cache_' + cls.plural_name
+        if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
+            cache_name += '_' + Ojota.CURRENT_DATA_CODE
+        return cache_name
 
     @classmethod
     def _read_all_from_datasource(cls):
         """Reads the data from the datasource, makes a dictionary with the key
         specified in the key parameter. Allows to filter by subdirectories when
         the data is not on the root according to the data path."""
-        cache_name = '_cache_' + cls.plural_name
-
-        if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
-            cache_name += '_' + Ojota.CURRENT_DATA_CODE
+        cache_name = cls.get_cache_name()
 
         if cache_name not in cls.cache:
             elements = cls.data_source.fetch_elements(cls)
@@ -190,9 +193,7 @@ class Ojota(object):
     @classmethod
     def _read_item_from_datasource(cls, pk):
         """Reads the data form the datasource if support index search."""
-        cache_name = '_cache_' + cls.plural_name
-        if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
-            cache_name += '_' + Ojota.CURRENT_DATA_CODE
+        cache_name = cls.get_cache_name()
 
         element = cls.data_source.fetch_element(cls, pk)
         if cache_name in cls.cache:
@@ -365,3 +366,49 @@ class Ojota(object):
 
     def to_dict(self):
         return dict([(field, getattr(self, field)) for field in self.fields])
+
+    def update(self, **kwargs):
+        """Updates the given values."""
+        for arg, value in kwargs.items():
+            if arg != self.pk_field:
+                if arg not in self.fields:
+                    self.fields.append(arg)
+                setattr(self, arg, value)
+        self.dump_values()
+
+    def dump_values(self, new_data=None):
+        """Saves the data into a file."""
+        elements = self.__class__.all()
+        json_data = []
+        for element in elements:
+            if element == self:
+                data = self.to_dict()
+            else:
+                data = element.to_dict()
+            json_data.append(data)
+
+        if new_data is not None:
+            json_data.append(new_data)
+
+        self.data_source.save(self.__class__, json_data)
+        cache_name = self.__class__.get_cache_name()
+        self.cache.clear(cache_name)
+
+
+    def save(self):
+        """Save function for an object."""
+        ojota_fields = ("fields", "required_fields", "relations",
+                        "backwards_relations")
+        data = self.__dict__
+
+
+        if all([field in data.keys() for field in self.required_fields]):
+            new_data = {}
+            for attr_name, attr_value in data.items():
+                if attr_name not in ojota_fields:
+                    self.fields.append(attr_name)
+                    new_data[attr_name] = attr_value
+            if self.__class__.get(self.primary_key) is None:
+                self.dump_values(new_data)
+            else:
+                self.update(**new_data)

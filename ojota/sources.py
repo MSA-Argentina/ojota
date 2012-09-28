@@ -81,10 +81,23 @@ class Source(object):
         data_path = self._get_file_path(cls)
         return self.read_element(cls, data_path, pk)
 
+    def save(self, cls, data):
+        """Fetch the elements for a given element of a class.
+
+        Arguments:
+            cls - the class with the data.
+            pk - the primary key of the given element.
+        """
+        file_path = self._get_file_path(cls)
+        return self.write_elements(file_path, data)
+
     def read_elements(self, cls, filepath):
         raise NotImplementedError
 
     def read_element(self, cls, url, pk):
+        raise NotImplementedError
+
+    def write_elements(self, filepath, data):
         raise NotImplementedError
 
 
@@ -105,6 +118,12 @@ class JSONSource(Source):
             raise AttributeError("Primary key was not found. Check that you have configured the class correctly. In case yopu have check your data source")
 
         return elements
+
+    def write_elements(self, filepath, data):
+        data_set = open('%s.json' % filepath, 'w')
+        json_data = json.dumps(data, indent=4)
+        data_set.write(json_data)
+        data_set.close()
 
 
 class YAMLSource(Source):
