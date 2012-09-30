@@ -224,3 +224,47 @@ class WebServiceSource(Source):
         data = response.json
         element = {data[cls.pk_field]: data}
         return element
+
+
+class CSVSource(Source):
+    def __init__(self, data_path=None, separator=","):
+        Source.__init__(self, data_path=data_path)
+        self.separator = separator
+
+    """Source class for the data stored with JSON format"""
+    def read_elements(self, cls, filepath):
+        """Reads the elements form a JSON file. Returns a dictionary containing
+        the read data.
+
+        Arguments:
+            filepath -- the path for the json file.
+        """
+        data = open('%s.csv' % filepath, 'r')
+        keys = data.readline().strip().split(self.separator)
+        dicts = [dict(zip(keys, elem.strip().split(self.separator))) for elem in data]
+        try:
+            elements = {}
+            for element in dicts:
+                for key, value in element.items():
+                    if value == "":
+                        del element[key]
+                elements[element[cls.pk_field]] = element
+        except KeyError:
+            raise AttributeError("Primary key was not found. Check that you have configured the class correctly. In case yopu have check your data source")
+
+        return elements
+
+    def write_elements(self, filepath, data):
+        data_set = open('%s.csv' % filepath, 'w')
+        keys = []
+        for element in data:
+            keys.extend(element.keys())
+        keys = set(keys)
+        lines = []
+        lines.append(self.separator.join(keys) + "\n")
+        for element in data:
+            line = self.separator.join([element.get(key, "") for key in keys])
+            lines.append(line + "\n")
+
+        data_set.writelines(lines)
+        data_set.close()
