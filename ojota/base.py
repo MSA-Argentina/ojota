@@ -141,7 +141,7 @@ class Ojota(object):
     """
     __metaclass__ = MetaOjota
     CURRENT_DATA_CODE = ''
-    plural_name = 'Ojota'
+    plural_name = None
     data_in_root = True
     pk_field = "pk"
     required_fields = None
@@ -152,6 +152,15 @@ class Ojota(object):
     def primary_key(self):
         """Returns the primary key value."""
         return getattr(self, self.pk_field)
+
+    @classmethod
+    def get_plural_name(cls):
+        if cls.plural_name is None:
+            plural_name = "%ss" % cls.__name__
+        else:
+            plural_name = cls.plural_name
+
+        return plural_name
 
     def __init__(self, _pk=None, **kwargs):
         """Constructor."""
@@ -171,7 +180,7 @@ class Ojota(object):
 
     @classmethod
     def get_cache_name(cls):
-        cache_name = '_cache_' + cls.plural_name
+        cache_name = '_cache_' + cls.get_plural_name()
         if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
             cache_name += '_' + Ojota.CURRENT_DATA_CODE
         return cache_name

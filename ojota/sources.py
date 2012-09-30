@@ -56,10 +56,10 @@ class Source(object):
         else:
             data_path = self.data_path
         if cls.data_in_root or not cls.CURRENT_DATA_CODE:
-            filepath = os.path.join(data_path, cls.plural_name)
+            filepath = os.path.join(data_path, cls.get_plural_name())
         else:
             filepath = os.path.join(data_path, cls.CURRENT_DATA_CODE,
-                                    cls.plural_name)
+                                    cls.get_plural_name())
         return filepath
 
     def fetch_elements(self, cls):

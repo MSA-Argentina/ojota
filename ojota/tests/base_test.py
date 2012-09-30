@@ -9,13 +9,11 @@ from ojota.cache import DummyCache, Cache
 
 
 class Person(Ojota):
-    plural_name = "Persons"
     pk_field = "id"
     cache = DummyCache()
 
 
 class Team(Ojota):
-    plural_name = "Teams"
     pk_field = "id"
     data_source = YAMLSource()
 
@@ -122,7 +120,6 @@ class OjotaTest(TestCase):
                            u'id': u'1'}}
 
         class Person(Ojota):
-            plural_name = "Persons"
             pk_field = "id"
             data_source = MockSource()
 
@@ -207,6 +204,7 @@ class OjotaTest(TestCase):
     def test_read_all_from_datasource_cache(self):
         """Testing read all the data from datasource using cache."""
         class Person2(Person):
+            plural_name = "Persons"
             cache = Cache()
 
         expected = {u'1': {u'name': u'Ezequiel', u'age': 25, u'country_id': u'1',
@@ -230,6 +228,7 @@ class OjotaTest(TestCase):
         current_data_code("alternative")
         class Person2(Person):
             data_in_root = False
+            plural_name = "Persons"
 
         expected = {u'1': {u'id': u'1', u'name': u'Jhon'},
                     u'2': {u'id': u'2', u'name': u'Paul'},
@@ -255,6 +254,7 @@ class OjotaTest(TestCase):
 
         class Person2(Person):
             data_source = MockSource()
+            plural_name = "Persons"
 
         elements = Person2._read_item_from_datasource('1')
 
@@ -275,6 +275,7 @@ class OjotaTest(TestCase):
 
         class Person2(Person):
             data_source = MockSource()
+            plural_name = "Persons"
             cache = Cache()
 
         elements = Person2._read_item_from_datasource('1')
@@ -384,6 +385,7 @@ class RelationsTest(TestCase):
         """Testing relation."""
         class Person2(Person):
             team = Relation("team_id", Team)
+            plural_name = "Persons"
 
         person = Person2.get('1')
         self.assertEqual('1', person.team.primary_key)
@@ -392,6 +394,7 @@ class RelationsTest(TestCase):
         """Testing relation backwards."""
         class Person2(Person):
             team = Relation("team_id", Team, "persons")
+            plural_name = "Persons"
 
         person = Person2.get('1')
         self.assertEqual('1', person.team.primary_key)

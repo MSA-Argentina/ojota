@@ -19,7 +19,7 @@ class SourceTest(TestCase):
     def test_get_file_path(self):
         """Getting file path."""
         set_data_source("data")
-        expected = "data/Ojota"
+        expected = "data/Ojotas"
         source = Source()
         result = source._get_file_path(Ojota)
 
@@ -28,7 +28,7 @@ class SourceTest(TestCase):
     def test_get_file_path_param(self):
         """Getting file path with a data_path param."""
         set_data_source("data")
-        expected = "data_2/Ojota"
+        expected = "data_2/Ojotas"
         source = Source("data_2")
         result = source._get_file_path(Ojota)
 
@@ -40,9 +40,10 @@ class SourceTest(TestCase):
 
         class _OjotaChild(Ojota):
             data_in_root = False
+            plural_name = "Ojotas"
 
         set_data_source("data")
-        expected = "data/data_code/Ojota"
+        expected = "data/data_code/Ojotas"
         source = Source()
         result = source._get_file_path(_OjotaChild)
 
@@ -54,9 +55,10 @@ class SourceTest(TestCase):
 
         class _OjotaChild(Ojota):
             data_in_root = False
+            plural_name = "Ojotas"
 
         set_data_source("data")
-        expected = "data_2/data_code/Ojota"
+        expected = "data_2/data_code/Ojotas"
         source = Source("data_2")
         result = source._get_file_path(_OjotaChild)
 
@@ -80,7 +82,6 @@ class JsonSourceTest(TestCase):
         set_data_source(os.path.join(file_path, "data"))
 
         class Person(Ojota):
-            plural_name = "Persons"
             pk_field = "id"
 
         expected = {u'1': {u'name': u'Ezequiel', u'age': 25,
@@ -106,7 +107,6 @@ class YAMLSourceTest(TestCase):
         set_data_source(os.path.join(file_path, "data"))
 
         class Team(Ojota):
-            plural_name = "Teams"
             pk_field = "id"
 
         expected = {'1': {'color': 'red', 'id': '1', 'name': 'River Plate'},
