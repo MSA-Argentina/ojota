@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Examples &mdash; Ojota 0.4.0 documentation</title>
+    <title>Examples &mdash; Ojota 0.4.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.4.0',
+        VERSION:     '0.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Ojota 0.4.0 documentation" href="index.html" />
+    <link rel="top" title="Ojota 0.4.1 documentation" href="index.html" />
     <link rel="next" title="Modules Reference" href="examples.html" />
     <link rel="prev" title="Welcome to Ojota’s documentation!" href="index.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to Ojota’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Ojota 0.4.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Ojota 0.4.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -74,7 +74,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">ojota</span> <span class="kn">import</span> <span class="n">Ojota</span><span class="p">,</span> <span class="n">Relation</span><span class="p">,</span> <span class="n">set_data_source</span>
-<span class="kn">from</span> <span class="nn">ojota.sources</span> <span class="kn">import</span> <span class="n">YAMLSource</span>
+<span class="kn">from</span> <span class="nn">ojota.sources</span> <span class="kn">import</span> <span class="n">YAMLSource</span><span class="p">,</span> <span class="n">CSVSource</span>
 <span class="kn">from</span> <span class="nn">ojota.examples.example_ws</span> <span class="kn">import</span> <span class="n">Country</span><span class="p">,</span> <span class="n">Flag</span>
 <span class="kn">from</span> <span class="nn">ojota.cache</span> <span class="kn">import</span> <span class="n">Memcache</span>
 
@@ -102,6 +102,18 @@
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+
+<span class="k">class</span> <span class="nc">Customer</span><span class="p">(</span><span class="n">Ojota</span><span class="p">):</span>
+    <span class="n">plural_name</span> <span class="o">=</span> <span class="s">&quot;Customers&quot;</span>
+    <span class="n">pk_field</span> <span class="o">=</span> <span class="s">&quot;id&quot;</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;address&quot;</span><span class="p">,</span> <span class="s">&quot;age&quot;</span><span class="p">)</span>
+    <span class="n">data_source</span> <span class="o">=</span> <span class="n">CSVSource</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c">#print [customer.to_dict() for customer in Customer.all()]</span>
+    <span class="n">Customer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -244,7 +256,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to Ojota’s documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">Ojota 0.4.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Ojota 0.4.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

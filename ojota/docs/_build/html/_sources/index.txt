@@ -14,6 +14,7 @@ Supported data formats
 =======================
  * JSON
  * YAML
+ * CSV
  * JSON through web service
 
 Installation
