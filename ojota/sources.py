@@ -29,8 +29,6 @@ try:
 except ImportError:
     request_imported = False
 
-from urllib2 import urlopen
-
 
 _DATA_SOURCE = "data"
 

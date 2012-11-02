@@ -24,6 +24,7 @@ def current_data_code(data_code):
     """Sets the current data path."""
     Ojota.CURRENT_DATA_CODE = data_code
 
+
 def set_data_source(data_path):
     ojota.sources._DATA_SOURCE = data_path
 
@@ -71,7 +72,7 @@ class Relation(object):
 class WSRelation(Relation):
     """Adds a relation to another object."""
     def __init__(self, attr_fk, to_class, related_name=None, ws_call=None,
-                  plural_name=None):
+                 plural_name=None):
         """Constructor for the relation class
         Arguments:
             attr_fk -- a String with the foreign key attribute name
@@ -104,7 +105,7 @@ class WSRelation(Relation):
                 ret = _klass.get(getattr(method_self, self.attr_fk))
             else:
                 _klass.__class__.plural_name = "/".join(
-                            (plural_name, getattr(method_self, self.attr_fk)))
+                    (plural_name, getattr(method_self, self.attr_fk)))
                 _klass.data_source.get_all_cmd = self.ws_call
                 ret = _klass.all()
             _klass.__class__.plural_name = self.__plural_name
@@ -262,19 +263,19 @@ class Ojota(object):
                 r = str(element_data[field]).startswith(str(value))
             elif operation == 'istartswith':
                 r = str(element_data[field]).lower().startswith(
-                                                            str(value).lower())
+                    str(value).lower())
             elif operation == 'endswith':
                 r = str(element_data[field]).endswith(str(value))
             elif operation == 'iendswith':
                 r = str(element_data[field]).lower().endswith(
-                                                            str(value).lower())
+                    str(value).lower())
             elif operation == 'range':
                 r = value[0] <= element_data[field] <= value[1]
             elif operation == 'ne':
                 r = element_data[field] != value
             else:
-                raise AttributeError("The operation %s does not exist" %
-                                      operation)
+                raise AttributeError(
+                    "The operation %s does not exist" % operation)
         except KeyError:
             raise AttributeError("The field %s does not exist" % field)
         # TODO date operations
@@ -403,13 +404,11 @@ class Ojota(object):
         cache_name = self.__class__.get_cache_name()
         self.cache.clear(cache_name)
 
-
     def save(self):
         """Save function for an object."""
         ojota_fields = ("fields", "required_fields", "relations",
                         "backwards_relations")
         data = self.__dict__
-
 
         if all([field in data.keys() for field in self.required_fields]):
             new_data = {}
