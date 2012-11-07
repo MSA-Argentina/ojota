@@ -276,8 +276,9 @@ class CSVSource(Source):
 
 
 class XLSSource(Source):
-    def __init__(self, data_path=None):
+    def __init__(self, data_path=None, worksheet=0):
         Source.__init__(self, data_path=data_path)
+        self.worksheet = worksheet
 
     """Source class for the data stored with JSON format"""
     def read_elements(self, cls, filepath):
@@ -306,7 +307,7 @@ class XLSSource(Source):
     def write_elements(self, filepath, data):
         wb = Workbook()
         dest_filename = '%s.xlsx' % filepath
-        ws = wb.worksheets[0]
+        ws = wb.worksheets[self.worksheet]
         ws.title = "Ojota data"
 
         keys = []
