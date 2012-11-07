@@ -17,7 +17,7 @@ This file is part of Ojota.
 import os
 
 from ojota import Ojota, Relation, set_data_source
-from ojota.sources import YAMLSource, CSVSource
+from ojota.sources import YAMLSource, CSVSource, XLSSource
 from ojota.examples.example_ws import Country, Flag
 from ojota.cache import Memcache
 
@@ -53,7 +53,12 @@ class Customer(Ojota):
     required_fields = ("id", "name", "address", "age")
     data_source = CSVSource()
 
+class OtherPeople(Ojota):
+    plural_name = "OtherPeople"
+    pk_field = "id"
+    data_source = XLSSource()
+    required_fields = ("id", "nombre", "apellido", "edad")
+
 
 if __name__ == "__main__":
-    #print [customer.to_dict() for customer in Customer.all()]
-    Customer.get("1").save()
+    pass

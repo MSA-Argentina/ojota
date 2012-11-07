@@ -29,7 +29,12 @@ try:
 except ImportError:
     request_imported = False
 
-from urllib2 import urlopen
+try:
+    from openpyxl import Workbook, load_workbook
+    from openpyxl.cell import get_column_letter
+    openpyxl_imported = True
+except ImportError:
+    openpyxl_imported = False
 
 
 _DATA_SOURCE = "data"
@@ -115,7 +120,7 @@ class JSONSource(Source):
             elements = dict((element_data[cls.pk_field], element_data)
                             for element_data in data)
         except KeyError:
-            raise AttributeError("Primary key was not found. Check that you have configured the class correctly. In case yopu have check your data source")
+            raise AttributeError("Primary key was not found. Check that you have configured the class correctly. In case you have check your data source")
 
         return elements
 
@@ -268,3 +273,54 @@ class CSVSource(Source):
 
         data_set.writelines(lines)
         data_set.close()
+
+
+class XLSSource(Source):
+    def __init__(self, data_path=None):
+        Source.__init__(self, data_path=data_path)
+
+    """Source class for the data stored with JSON format"""
+    def read_elements(self, cls, filepath):
+        """Reads the elements form a JSON file. Returns a dictionary containing
+        the read data.
+
+        Arguments:
+            filepath -- the path for the json file.
+        """
+        elements = {}
+        if openpyxl_imported:
+            wb = load_workbook('%s.xlsx' % filepath)
+            ws = wb.get_active_sheet()
+            rows = list(ws.rows)
+            keys = [row.value for row in rows.pop(0)]
+            for row in rows:
+                row_dict = {}
+                for key, cell in enumerate(row):
+                    row_dict[keys[key]] = cell.value
+                elements[row_dict[cls.pk_field]] = row_dict
+        else:
+            raise Exception("In order to use XLS sources you should install the 'openpyxl' package")
+
+        return elements
+
+    def write_elements(self, filepath, data):
+        wb = Workbook()
+        dest_filename = '%s.xlsx' % filepath
+        ws = wb.worksheets[0]
+        ws.title = "Ojota generated"
+
+        keys = []
+        for element in data:
+            keys.extend(element.keys())
+        keys = list(set(keys))
+        row = 1
+        for col_index, key in enumerate(keys, 1):
+            col = get_column_letter(col_index)
+            ws.cell('%s%s'%(col, row)).value = key
+
+        for row, element in enumerate(data, 2):
+            for col_index, key in enumerate(keys, 1):
+                col = get_column_letter(col_index)
+                ws.cell('%s%s'%(col, row)).value = element.get(key)
+
+        wb.save(filename=dest_filename)
