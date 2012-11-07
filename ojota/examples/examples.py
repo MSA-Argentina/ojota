@@ -53,12 +53,13 @@ class Customer(Ojota):
     required_fields = ("id", "name", "address", "age")
     data_source = CSVSource()
 
+
 class OtherPeople(Ojota):
     plural_name = "OtherPeople"
     pk_field = "id"
     data_source = XLSSource()
-    required_fields = ("id", "nombre", "apellido", "edad")
+    required_fields = ("id", "name", "last_name", "age")
 
 
 if __name__ == "__main__":
-    pass
+    print OtherPeople.get().to_dict()

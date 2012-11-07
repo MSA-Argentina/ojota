@@ -307,7 +307,7 @@ class XLSSource(Source):
         wb = Workbook()
         dest_filename = '%s.xlsx' % filepath
         ws = wb.worksheets[0]
-        ws.title = "Ojota generated"
+        ws.title = "Ojota data"
 
         keys = []
         for element in data:
