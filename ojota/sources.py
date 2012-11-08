@@ -121,7 +121,10 @@ class JSONSource(Source):
             elements = dict((element_data[cls.pk_field], element_data)
                             for element_data in data)
         except KeyError:
-            raise AttributeError("Primary key was not found. Check that you have configured the class correctly. In case you have check your data source")
+            msg = "Primary key was not found. Check that you have "
+            msg += "configured the class correctly. In case you "
+            msg += "have check your data source"
+            raise AttributeError(msg)
 
         return elements
 
@@ -150,7 +153,9 @@ class YAMLSource(Source):
             for key, value in datos.items():
                 elements[value[cls.pk_field]] = value
         else:
-            raise Exception("In order to use YAML sources you should install the 'PyYAML' package")
+            msg = "In order to use YAML sources you should install "
+            msg += " the 'PyYAML' package"
+            raise Exception(msg)
 
         return elements
 
@@ -164,20 +169,22 @@ class WebServiceSource(Source):
     WSTIMEOUT = 5
 
     def __init__(self, data_path=None, method="get", get_all_cmd="/all",
-                  get_cmd="/data", user=None, password=None, cert=None,
-                  custom_call=None):
+                 get_cmd="/data", user=None, password=None, cert=None,
+                 custom_call=None):
         """Constructor for the WebServiceSource class.
 
         Arguments:
             data_path -- the path where the data is located.
             method -- the http method that will be used witht the web service.
             Defauts to "get".
-            get_all_cmd -- the WS command to fetch all the data. Defaults to "/all".
-            get_cmd -- the WS command to fetch one element. Defaults to "/data"
+            get_all_cmd -- the WS command to fetch all the data.
+                           Defaults to "/all".
+            get_cmd -- the WS command to fetch one element.
+                       Defaults to "/data"
             user -- the user name for the authentication. If not provided
-            the request will not use authentication.
-            password -- the password for the authentication. If not provided the
-            request will not use authentication.
+                    the request will not use authentication.
+            password -- the password for the authentication. If not
+                        provided the request will not use authentication.
         """
         Source.__init__(self, data_path=data_path)
 
@@ -195,11 +202,13 @@ class WebServiceSource(Source):
             else:
                 self.auth = None
         else:
-            raise Exception("In order to use Web Service sources you should install the 'requests' package")
+            msg = "In order to use Web Service sources you should "
+            msg += " install the 'requests' package"
+            raise Exception(msg)
 
     def read_elements(self, cls, url):
-        """Reads the elements form a WS request. Returns a dictionary containing
-        the read data.
+        """Reads the elements form a WS request. Returns a dictionary
+        containing the read data.
 
         Arguments:
             cls -- the data class.
@@ -247,7 +256,9 @@ class CSVSource(Source):
         """
         data = open('%s.csv' % filepath, 'r')
         keys = data.readline().strip().split(self.separator)
-        dicts = [dict(zip(keys, elem.strip().split(self.separator))) for elem in data]
+        dicts = [dict(zip(keys, elem.strip().split(
+            self.separator))) for elem in data]
+
         try:
             elements = {}
             for element in dicts:
@@ -256,7 +267,10 @@ class CSVSource(Source):
                         del element[key]
                 elements[element[cls.pk_field]] = element
         except KeyError:
-            raise AttributeError("Primary key was not found. Check that you have configured the class correctly. In case yopu have check your data source")
+            msg = "Primary key was not found. Check that you have "
+            msg += "configured the class correctly. In case you "
+            msg += "have check your data source"
+            raise AttributeError(msg)
 
         return elements
 
