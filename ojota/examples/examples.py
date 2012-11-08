@@ -62,4 +62,5 @@ class OtherPeople(Ojota):
 
 
 if __name__ == "__main__":
-    print OtherPeople.get().to_dict()
+    p = OtherPeople(id=1, name="juan", last_name = "perez", age=30)
+    p.save()

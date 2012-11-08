@@ -32,6 +32,7 @@ except ImportError:
 try:
     from openpyxl import Workbook, load_workbook
     from openpyxl.cell import get_column_letter
+    from openpyxl.shared.exc import InvalidFileException
     openpyxl_imported = True
 except ImportError:
     openpyxl_imported = False
@@ -290,15 +291,18 @@ class XLSSource(Source):
         """
         elements = {}
         if openpyxl_imported:
-            wb = load_workbook('%s.xlsx' % filepath)
-            ws = wb.get_active_sheet()
-            rows = list(ws.rows)
-            keys = [row.value for row in rows.pop(0)]
-            for row in rows:
-                row_dict = {}
-                for key, cell in enumerate(row):
-                    row_dict[keys[key]] = cell.value
-                elements[row_dict[cls.pk_field]] = row_dict
+            try:
+                wb = load_workbook('%s.xlsx' % filepath)
+                ws = wb.get_active_sheet()
+                rows = list(ws.rows)
+                keys = [row.value for row in rows.pop(0)]
+                for row in rows:
+                    row_dict = {}
+                    for key, cell in enumerate(row):
+                        row_dict[keys[key]] = cell.value
+                    elements[row_dict[cls.pk_field]] = row_dict
+            except InvalidFileException:
+                print "Warning, the file in invalid"
         else:
             raise Exception("In order to use XLS sources you should install the 'openpyxl' package")
 
