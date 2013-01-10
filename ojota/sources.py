@@ -116,7 +116,16 @@ class JSONSource(Source):
         Arguments:
             filepath -- the path for the json file.
         """
-        data = json.load(open('%s.json' % filepath, 'r'))
+        json_path = '%s.json' % filepath
+        try:
+            json_file = open(json_path, 'r')
+        except IOError:
+            json_file = open(json_path, 'w')
+            json_file.write("[]")
+            json_file.close()
+            json_file = open(json_path, 'r')
+
+        data = json.load(json_file)
         try:
             elements = dict((element_data[cls.pk_field], element_data)
                             for element_data in data)
@@ -316,7 +325,7 @@ class XLSSource(Source):
                         row_dict[keys[key]] = cell.value
                     elements[row_dict[cls.pk_field]] = row_dict
             except InvalidFileException:
-                print "Warning, the file in invalid"
+                print("Warning, the file in invalid")
         else:
             raise Exception("In order to use XLS sources you should install the 'openpyxl' package")
 

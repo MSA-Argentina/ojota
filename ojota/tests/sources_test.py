@@ -84,16 +84,16 @@ class JsonSourceTest(TestCase):
         class Person(Ojota):
             pk_field = "id"
 
-        expected = {u'1': {u'name': u'Ezequiel', u'age': 25,
-                           u'country_id': u'1', u'height': 120,
-                           u'team_id': u'1', u'address': u'Lujan 1432',
-                           u'id': u'1'},
-                    u'3': {u'name': u'Juan Carlos', u'age': 35,
-                           u'country_id': u'0', u'team_id': u'1',
-                           u'address': u'Spam 3092', u'id': u'3'},
-                    u'2': {u'name': u'Matias', u'age': 35, u'country_id': u'1',
-                           u'team_id': u'2', u'address': u'Che Guevara 1875',
-                           u'id': u'2'}}
+        expected = {'1': {'name': 'Ezequiel', 'age': 25,
+                           'country_id': '1', 'height': 120,
+                           'team_id': '1', 'address': 'Lujan 1432',
+                           'id': '1'},
+                    '3': {'name': 'Juan Carlos', 'age': 35,
+                           'country_id': '0', 'team_id': '1',
+                           'address': 'Spam 3092', 'id': '3'},
+                    '2': {'name': 'Matias', 'age': 35, 'country_id': '1',
+                           'team_id': '2', 'address': 'Che Guevara 1875',
+                           'id': '2'}}
 
         source = JSONSource()
         result = source.read_elements(Person, source._get_file_path(Person))

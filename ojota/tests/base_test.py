@@ -33,7 +33,7 @@ class OjotaTest(TestCase):
     def test_all(self):
         """Testing the all method."""
         expected_len = 3
-        expected_order = [u'1', u'3', u'2']
+        expected_order = ['1', '3', '2']
         persons = Person.all()
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
@@ -42,7 +42,7 @@ class OjotaTest(TestCase):
     def test_all_order(self):
         """Testing the all method with order."""
         expected_len = 3
-        expected_order = [u'1', u'2', u'3']
+        expected_order = ['1', '2', '3']
         persons = Person.all(sorted="id")
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
@@ -51,7 +51,7 @@ class OjotaTest(TestCase):
     def test_all_reverse_order(self):
         """Testing the all method with reverse order."""
         expected_len = 3
-        expected_order = [u'3', u'2', u'1']
+        expected_order = ['3', '2', '1']
         persons = Person.all(sorted="-id")
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
@@ -60,7 +60,7 @@ class OjotaTest(TestCase):
     def test_all_multiple_order(self):
         """Testing the all method with multiple order."""
         expected_len = 3
-        expected_order = [u'3', u'1', u'2']
+        expected_order = ['3', '1', '2']
         persons = Person.all(sorted="country_id,-address")
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
@@ -69,7 +69,7 @@ class OjotaTest(TestCase):
     def test_all_with_filters(self):
         """Testing the all method with filters."""
         expected_len = 1
-        expected_order = [u'1']
+        expected_order = ['1']
         persons = Person.all(id='1')
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
@@ -114,10 +114,10 @@ class OjotaTest(TestCase):
             get_cmd = None
 
             def read_element(self, cls, url, pk):
-                return {u'1': {u'name': u'Ezequiel', u'age': 25,
-                           u'country_id': u'1', u'height': 120,
-                           u'team_id': u'1', u'address': u'Lujan 1432',
-                           u'id': u'1'}}
+                return {'1': {'name': 'Ezequiel', 'age': 25,
+                           'country_id': '1', 'height': 120,
+                           'team_id': '1', 'address': 'Lujan 1432',
+                           'id': '1'}}
 
         class Person(Ojota):
             pk_field = "id"
@@ -140,18 +140,18 @@ class OjotaTest(TestCase):
 
     def test_to_dict(self):
         """Testing to_dict."""
-        expected = {u'name': u'Ezequiel', u'age': 25, u'country_id': u'1',
-                    u'height': 120, u'team_id': u'1', u'address': u'Lujan 1432',
-                    u'id': u'1'}
+        expected = {'name': 'Ezequiel', 'age': 25, 'country_id': '1',
+                    'height': 120, 'team_id': '1', 'address': 'Lujan 1432',
+                    'id': '1'}
         person = Person.get('1')
         result = person.to_dict()
         self.assertEqual(expected, result)
 
     def test_init(self):
         """Testing object initialization."""
-        expected = {u'name': u'Ezequiel', u'age': 25, u'country_id': u'1',
-                    u'height': 120, u'team_id': u'1', u'address': u'Lujan 1432',
-                    u'id': u'1'}
+        expected = {'name': 'Ezequiel', 'age': 25, 'country_id': '1',
+                    'height': 120, 'team_id': '1', 'address': 'Lujan 1432',
+                    'id': '1'}
 
         person = Person(**expected)
         self.assertEqual(expected, person.to_dict())
@@ -162,40 +162,40 @@ class OjotaTest(TestCase):
 
     def test_init_required(self):
         """Testing object init with no params."""
-        self.assertRaises(AttributeError, Person)
+        self.assertRaises(1, Person)
 
     def test_init_required_fields_id(self):
         """Testing required fields with id."""
-        expected = {u'id': u'1'}
+        expected = {'id': '1'}
 
         person = Person(**expected)
         self.assertEqual(['id'], person.required_fields)
 
     def test_init_required_fields_tuple(self):
         """Testing required fields with id as a tuple."""
-        expected = {u'id': u'1'}
+        expected = {'id': '1'}
         Person.required_fields = ('id', )
         person = Person(**expected)
         self.assertEqual(['id'], person.required_fields)
 
     def test_init_required_fields(self):
         """Testing required fields default pk addition."""
-        expected = {u'id': u'1', "name": "Ezequiel"}
+        expected = {'id': '1', "name": "Ezequiel"}
 
         person = Person(**expected)
         self.assertEqual(['id'], person.required_fields)
 
     def test_read_all_from_datasource(self):
         """Testing read all the data from datasource."""
-        expected = {u'1': {u'name': u'Ezequiel', u'age': 25, u'country_id': u'1',
-                           u'height': 120, u'team_id': u'1', u'address':
-                           u'Lujan 1432', u'id': u'1'},
-                    u'3': {u'name': u'Juan Carlos', u'age': 35,
-                           u'country_id': u'0', u'team_id': u'1', u'address':
-                           u'Spam 3092', u'id': u'3'},
-                    u'2': {u'name': u'Matias', u'age': 35, u'country_id': u'1',
-                           u'team_id': u'2', u'address': u'Che Guevara 1875',
-                           u'id': u'2'}}
+        expected = {'1': {'name': 'Ezequiel', 'age': 25, 'country_id': '1',
+                           'height': 120, 'team_id': '1', 'address':
+                           'Lujan 1432', 'id': '1'},
+                    '3': {'name': 'Juan Carlos', 'age': 35,
+                           'country_id': '0', 'team_id': '1', 'address':
+                           'Spam 3092', 'id': '3'},
+                    '2': {'name': 'Matias', 'age': 35, 'country_id': '1',
+                           'team_id': '2', 'address': 'Che Guevara 1875',
+                           'id': '2'}}
 
         elements = Person._read_all_from_datasource()
 
@@ -207,15 +207,15 @@ class OjotaTest(TestCase):
             plural_name = "Persons"
             cache = Cache()
 
-        expected = {u'1': {u'name': u'Ezequiel', u'age': 25, u'country_id': u'1',
-                           u'height': 120, u'team_id': u'1', u'address':
-                           u'Lujan 1432', u'id': u'1'},
-                    u'3': {u'name': u'Juan Carlos', u'age': 35,
-                           u'country_id': u'0', u'team_id': u'1', u'address':
-                           u'Spam 3092', u'id': u'3'},
-                    u'2': {u'name': u'Matias', u'age': 35, u'country_id': u'1',
-                           u'team_id': u'2', u'address': u'Che Guevara 1875',
-                           u'id': u'2'}}
+        expected = {'1': {'name': 'Ezequiel', 'age': 25, 'country_id': '1',
+                           'height': 120, 'team_id': '1', 'address':
+                           'Lujan 1432', 'id': '1'},
+                    '3': {'name': 'Juan Carlos', 'age': 35,
+                           'country_id': '0', 'team_id': '1', 'address':
+                           'Spam 3092', 'id': '3'},
+                    '2': {'name': 'Matias', 'age': 35, 'country_id': '1',
+                           'team_id': '2', 'address': 'Che Guevara 1875',
+                           'id': '2'}}
 
         elements = Person2._read_all_from_datasource()
         self.assertEqual(expected, elements)
@@ -230,10 +230,10 @@ class OjotaTest(TestCase):
             data_in_root = False
             plural_name = "Persons"
 
-        expected = {u'1': {u'id': u'1', u'name': u'Jhon'},
-                    u'2': {u'id': u'2', u'name': u'Paul'},
-                    u'3': {u'id': u'3', u'name': u'George'},
-                    u'4': {u'id': u'4', u'name': u'Ringo'}}
+        expected = {'1': {'id': '1', 'name': 'Jhon'},
+                    '2': {'id': '2', 'name': 'Paul'},
+                    '3': {'id': '3', 'name': 'George'},
+                    '4': {'id': '4', 'name': 'Ringo'}}
 
         elements = Person2._read_all_from_datasource()
 
@@ -242,10 +242,10 @@ class OjotaTest(TestCase):
 
     def test_read_item_from_datasource(self):
         """Testing read one element from datasource."""
-        expected = {u'1': {u'name': u'Ezequiel', u'age': 25,
-                           u'country_id': u'1', u'height': 120,
-                           u'team_id': u'1', u'address': u'Lujan 1432',
-                           u'id': u'1'}}
+        expected = {'1': {'name': 'Ezequiel', 'age': 25,
+                           'country_id': '1', 'height': 120,
+                           'team_id': '1', 'address': 'Lujan 1432',
+                           'id': '1'}}
 
         class MockSource(Source):
             @staticmethod
@@ -263,10 +263,10 @@ class OjotaTest(TestCase):
 
     def test_read_item_from_datasource_cache(self):
         """Testing read one element from datasource using cache."""
-        expected = {u'1': {u'name': u'Ezequiel', u'age': 25,
-                           u'country_id': u'1', u'height': 120,
-                           u'team_id': u'1', u'address': u'Lujan 1432',
-                           u'id': u'1'}}
+        expected = {'1': {'name': 'Ezequiel', 'age': 25,
+                           'country_id': '1', 'height': 120,
+                           'team_id': '1', 'address': 'Lujan 1432',
+                           'id': '1'}}
 
         class MockSource(Source):
             @staticmethod

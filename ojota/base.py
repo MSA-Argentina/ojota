@@ -173,9 +173,10 @@ class Ojota(object):
         if self.pk_field not in self.required_fields:
             self.required_fields.append(self.pk_field)
 
-        if not all([key in kwargs for key in self.required_fields]):
-            raise AttributeError("The field '%s' is required" % key)
-        for key, val in kwargs.iteritems():
+        for key in self.required_fields:
+            if key not in kwargs:
+                raise AttributeError("The field '%s' is required" % key)
+        for key, val in kwargs.items():
             self.fields.append(key)
             setattr(self, key, val)
 
