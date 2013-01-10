@@ -187,13 +187,13 @@ class WebServiceSource(Source):
             method -- the http method that will be used witht the web service.
             Defauts to "get".
             get_all_cmd -- the WS command to fetch all the data.
-                           Defaults to "/all".
+            Defaults to "/all".
             get_cmd -- the WS command to fetch one element.
-                       Defaults to "/data"
+            Defaults to "/data"
             user -- the user name for the authentication. If not provided
-                    the request will not use authentication.
+            the request will not use authentication.
             password -- the password for the authentication. If not
-                        provided the request will not use authentication.
+            provided the request will not use authentication.
         """
         Source.__init__(self, data_path=data_path)
 
