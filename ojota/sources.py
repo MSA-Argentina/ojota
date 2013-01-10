@@ -173,7 +173,9 @@ class WebServiceSource(Source):
     """Source class for the data stored with JSON format taken through a Web
     Service.
 
-    requires the "request" package to run.
+        Requires the "requests" package to run.
+        http://pypi.python.org/pypi/requests
+
     """
     WSTIMEOUT = 5
 
