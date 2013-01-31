@@ -148,6 +148,7 @@ class Ojota(object):
     required_fields = None
     cache = Cache()
     data_source = JSONSource()
+    default_order= None
 
     @property
     def primary_key(self):
@@ -328,7 +329,7 @@ class Ojota(object):
     def all(cls, **kargs):
         """Returns all the elements that match the conditions."""
         elements = cls._read_all_from_datasource().values()
-        order_fields = None
+        order_fields = cls.default_order
         if 'sorted' in kargs:
             order_fields = kargs['sorted']
             del kargs['sorted']
