@@ -388,16 +388,20 @@ class Ojota(object):
                 setattr(self, arg, value)
         self.dump_values()
 
-    def dump_values(self, new_data=None):
+    def dump_values(self, new_data=None, delete=False):
         """Saves the data into a file."""
         elements = self.__class__.all()
         json_data = []
         for element in elements:
             if element == self:
-                data = self.to_dict()
+                if not delete:
+                    data = self.to_dict()
+                else:
+                    data = None
             else:
                 data = element.to_dict()
-            json_data.append(data)
+            if data is not None:
+                json_data.append(data)
 
         if new_data is not None:
             json_data.append(new_data)
@@ -405,6 +409,9 @@ class Ojota(object):
         self.data_source.save(self.__class__, json_data)
         cache_name = self.__class__.get_cache_name()
         self.cache.clear(cache_name)
+
+    def delete(self):
+        self.dump_values(delete=True)
 
     def save(self):
         """Save function for an object."""
