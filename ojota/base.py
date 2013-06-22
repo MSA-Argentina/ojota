@@ -14,6 +14,8 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
+from json import dumps
+
 import ojota.sources
 
 from ojota.sources import JSONSource
@@ -27,6 +29,11 @@ def current_data_code(data_code):
 
 def set_data_source(data_path):
     ojota.sources._DATA_SOURCE = data_path
+
+def preload(*args):
+    for arg in args:
+        if hasattr(arg, "preload"):
+            arg.preload()
 
 
 class Relation(object):
@@ -379,6 +386,9 @@ class Ojota(object):
     def to_dict(self):
         return dict([(field, getattr(self, field)) for field in self.fields])
 
+    def to_json(self):
+        return dumps(self.to_dict())
+
     def update(self, **kwargs):
         """Updates the given values."""
         for arg, value in kwargs.items():
@@ -429,3 +439,7 @@ class Ojota(object):
                 self.dump_values(new_data)
             else:
                 self.update(**new_data)
+
+    @classmethod
+    def preload(cls):
+        cls.all()
