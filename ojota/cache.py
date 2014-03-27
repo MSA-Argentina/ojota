@@ -42,7 +42,7 @@ class Cache(object):
 class Memcache(Cache):
     """Stores the cached data in memcache."""
     def __init__(self, cache_location="127.0.0.1", port=11211,
-                  expiration_time=None, debug=None):
+                 expiration_time=None, debug=None):
         """Constructor for the Memcache class.
 
         Arguments:
@@ -65,7 +65,8 @@ class Memcache(Cache):
             name -- the cache name.
             elems -- the data to cache.
         """
-        self._mc.set(str(name), memcache.pickle.dumps(elems), self.expiration_time)
+        self._mc.set(str(name), memcache.pickle.dumps(elems),
+                     self.expiration_time)
 
     def get(self, name):
         """Gets the data from cache.

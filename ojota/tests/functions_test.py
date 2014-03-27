@@ -8,7 +8,7 @@ class FunctionsTest(TestCase):
         """Testing the current_data_code function."""
         expected = "data_code_1"
         current_data_code(expected)
-        result = Ojota.CURRENT_DATA_CODE
+        result = Ojota.get_current_data_code()
         self.assertEqual(expected, result)
 
     def test_data_source(self):

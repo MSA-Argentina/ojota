@@ -20,15 +20,21 @@ import ojota.sources
 
 from ojota.sources import JSONSource
 from ojota.cache import Cache
+from threading import current_thread
 
 
 def current_data_code(data_code):
     """Sets the current data path."""
-    Ojota.CURRENT_DATA_CODE = data_code
+    Ojota._data_codes[current_thread()] = data_code
+
+
+def get_current_data_code():
+    return Ojota._data_codes[current_thread()]
 
 
 def set_data_source(data_path):
     ojota.sources._DATA_SOURCE = data_path
+
 
 def preload(*args):
     for arg in args:
@@ -148,14 +154,14 @@ class Ojota(object):
     """Base class to create instances of serialized data in the source files.
     """
     __metaclass__ = MetaOjota
-    CURRENT_DATA_CODE = ''
+    _data_codes = {}
     plural_name = None
     data_in_root = True
     pk_field = "pk"
     required_fields = None
     cache = Cache()
     data_source = JSONSource()
-    default_order= None
+    default_order = None
 
     @property
     def primary_key(self):
@@ -189,10 +195,14 @@ class Ojota(object):
             setattr(self, key, val)
 
     @classmethod
+    def get_current_data_code(cls):
+        return get_current_data_code()
+
+    @classmethod
     def get_cache_name(cls):
         cache_name = '_cache_' + cls.get_plural_name()
-        if not cls.data_in_root and Ojota.CURRENT_DATA_CODE:
-            cache_name += '_' + Ojota.CURRENT_DATA_CODE
+        if not cls.data_in_root and get_current_data_code():
+            cache_name += '_' + get_current_data_code()
         return cache_name
 
     @classmethod

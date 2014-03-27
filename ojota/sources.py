@@ -61,10 +61,10 @@ class Source(object):
             data_path = _DATA_SOURCE
         else:
             data_path = self.data_path
-        if cls.data_in_root or not cls.CURRENT_DATA_CODE:
+        if cls.data_in_root or not cls.get_current_data_code():
             filepath = os.path.join(data_path, cls.get_plural_name())
         else:
-            filepath = os.path.join(data_path, cls.CURRENT_DATA_CODE,
+            filepath = os.path.join(data_path, cls.get_current_data_code(),
                                     cls.get_plural_name())
         return filepath
 
@@ -346,11 +346,11 @@ class XLSSource(Source):
         row = 1
         for col_index, key in enumerate(keys, 1):
             col = get_column_letter(col_index)
-            ws.cell('%s%s'%(col, row)).value = key
+            ws.cell('%s%s' % (col, row)).value = key
 
         for row, element in enumerate(data, 2):
             for col_index, key in enumerate(keys, 1):
                 col = get_column_letter(col_index)
-                ws.cell('%s%s'%(col, row)).value = element.get(key)
+                ws.cell('%s%s' % (col, row)).value = element.get(key)
 
         wb.save(filename=dest_filename)
