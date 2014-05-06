@@ -29,7 +29,8 @@ def current_data_code(data_code):
 
 
 def get_current_data_code():
-    return Ojota._data_codes[current_thread()]
+    data_code = Ojota._data_codes.get(current_thread(), "")
+    return data_code
 
 
 def set_data_source(data_path):
@@ -80,6 +81,23 @@ class Relation(object):
             prop = property(_inner)
             setattr(self.to_class, self.related_name, prop)
             self.to_class.backwards_relations.append(self.related_name)
+
+
+class Callback(object):
+    def __init__(self, field_name, function):
+        print field_name, function
+        self.field_name = field_name
+        self.function = function
+
+    def get_property(self):
+        """Returns the property in which the relation will be referenced."""
+        def _inner(method_self):
+            """Inner function to return the property for the relation."""
+            fk = getattr(method_self, self.field_name)
+            return self.function(fk)
+
+        ret = property(_inner)
+        return ret
 
 
 class WSRelation(Relation):
@@ -147,6 +165,9 @@ class MetaOjota(type):
                 value.set_reversed_property(self)
                 setattr(self, attr, value.get_property())
                 self.relations[value.attr_fk] = (value.to_class, attr, value)
+            elif isinstance(value, Callback):
+                setattr(self, attr, value.get_property())
+
         return super(MetaOjota, self).__init__(*args, **kwargs)
 
 

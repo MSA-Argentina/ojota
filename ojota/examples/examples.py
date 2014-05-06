@@ -16,7 +16,7 @@ This file is part of Ojota.
 """
 import os
 
-from ojota import Ojota, Relation, set_data_source
+from ojota import Ojota, Relation, set_data_source, Callback
 from ojota.sources import YAMLSource, CSVSource, XLSSource
 from ojota.examples.example_ws import Country, Flag
 from ojota.cache import Memcache
@@ -41,7 +41,7 @@ class Person(Ojota):
     required_fields = ("id", "name", "address", "age", "team_id")
     team = Relation("team_id", Team, "persons")
     country = Relation("country_id", Country, "persons")
-    #cache  = Memcache()
+    age_str = Callback("age", lambda x:str(x))
 
     def __repr__(self):
         return self.name
@@ -62,5 +62,8 @@ class OtherPeople(Ojota):
 
 
 if __name__ == "__main__":
-    p = OtherPeople(id=1, name="juan", last_name = "perez", age=30)
-    p.save()
+    #p = Person(id=1, name="juan", last_name = "perez", age=30)
+    #p.save()
+    p = Person.all()
+    print p
+    print p[0].age_str
