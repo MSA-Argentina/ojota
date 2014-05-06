@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to Ojota’s documentation! &mdash; Ojota 1.1.0 documentation</title>
+    <title>Welcome to Ojota’s documentation! &mdash; Ojota 2.0.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Ojota 1.1.0 documentation" href="#" />
+    <link rel="top" title="Ojota 2.0.0 documentation" href="#" />
     <link rel="next" title="Examples" href="module.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="module.html" title="Examples"
              accesskey="N">next</a> |</li>
-        <li><a href="#">Ojota 1.1.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Ojota 2.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,6 +50,47 @@
 <p>Ojota is a ORM and flat file database engine.</p>
 <p>Ojota is Free Software! you can check the code at <a class="reference external" href="http://bitbucket.org/msa_team/ojota">http://bitbucket.org/msa_team/ojota</a></p>
 </div>
+<div class="section" id="how-does-it-works">
+<h1>How does it works?<a class="headerlink" href="#how-does-it-works" title="Permalink to this headline">¶</a></h1>
+<p>First we will define the data object</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># The information is stored in a file called Persons.json</span>
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">Ojota</span><span class="p">):</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;address&quot;</span><span class="p">,</span> <span class="s">&quot;age&quot;</span><span class="p">)</span>
+    <span class="n">cache</span>  <span class="o">=</span> <span class="n">Memcache</span><span class="p">()</span>
+
+<span class="c"># The information is stored in a file called Teams.yaml</span>
+<span class="k">class</span> <span class="nc">Team</span><span class="p">(</span><span class="n">Ojota</span><span class="p">):</span>
+    <span class="n">pk_field</span> <span class="o">=</span> <span class="s">&quot;id&quot;</span>
+    <span class="n">data_source</span> <span class="o">=</span> <span class="n">YAMLSource</span><span class="p">()</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;color&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+</div>
+<p>Just with that we can query the ORM objects</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Some Example queries</span>
+<span class="c"># &quot;all&quot; returns all the Person Objects</span>
+<span class="n">Person</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="c"># &quot;many will return filtered results</span>
+<span class="n">Person</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">age</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+<span class="n">Person</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">age__lt</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="s">&quot;-name&quot;</span><span class="p">)</span>
+<span class="n">Person</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+
+<span class="c"># &quot;one&quot; will get only one object</span>
+<span class="n">Team</span><span class="o">.</span><span class="n">one</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c"># you can just send the primary key</span>
+<span class="n">Team</span><span class="o">.</span><span class="n">one</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;River Plate&quot;</span><span class="p">)</span>
+
+<span class="c"># You can sub-query over the results</span>
+<span class="n">persons</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="n">elders</span> <span class="o">=</span> <span class="n">persons</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">age__gt</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">fat_elders</span> <span class="o">=</span> <span class="n">elders</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">female_elders</span> <span class="o">=</span> <span class="n">elders</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">gender</span><span class="o">=</span><span class="s">&quot;F&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That&#8217;s it your information will be stored in plain text and you will have a
+powerfull ORM to play with it</p>
+</div>
 <div class="section" id="supported-data-formats">
 <h1>Supported data formats<a class="headerlink" href="#supported-data-formats" title="Permalink to this headline">¶</a></h1>
 <blockquote>
@@ -58,6 +99,17 @@
 <li>YAML</li>
 <li>CSV</li>
 <li>JSON through web service</li>
+<li>XLS</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="new-features-for-2-0">
+<h1>New Features for 2.0<a class="headerlink" href="#new-features-for-2-0" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><ul class="simple">
+<li>QuerySets with recursive filtering</li>
+<li>&#8220;Callbacks&#8221; support (you can add custom properties with a callback function)</li>
+<li>Hierarchical Objects support</li>
 </ul>
 </div></blockquote>
 </div>
@@ -77,6 +129,17 @@ sudo python setup.py install
 </pre></div>
 </div>
 </div>
+<div class="section" id="optional-dependencies">
+<h1>Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><ul class="simple">
+<li>pyyaml - To fecth the data from a file with YAML format</li>
+<li>request - To fetch JSON form web sevice</li>
+<li>flask &#8211; To run the example web service.</li>
+</ul>
+</div></blockquote>
+<p>You might also want to to take a look at Ojota&#8217;s sister project called Havaiana <a class="reference external" href="http://havaiana.rtfd.org">http://havaiana.rtfd.org</a></p>
+</div>
 <div class="section" id="table-of-contents">
 <h1>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
@@ -94,16 +157,6 @@ sudo python setup.py install
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="optional-dependencies">
-<h1>Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h1>
-<blockquote>
-<div><ul class="simple">
-<li>pyyaml - To fecth the data from a file with YAML format</li>
-<li>request - To fetch JSON form web sevice</li>
-<li>flask &#8211; To run the example web service.</li>
-</ul>
-</div></blockquote>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -126,10 +179,12 @@ sudo python setup.py install
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Welcome to Ojota&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#how-does-it-works">How does it works?</a></li>
 <li><a class="reference internal" href="#supported-data-formats">Supported data formats</a></li>
+<li><a class="reference internal" href="#new-features-for-2-0">New Features for 2.0</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#table-of-contents">Table of contents</a></li>
 <li><a class="reference internal" href="#optional-dependencies">Optional dependencies</a></li>
+<li><a class="reference internal" href="#table-of-contents">Table of contents</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
@@ -167,7 +222,7 @@ sudo python setup.py install
         <li class="right" >
           <a href="module.html" title="Examples"
              >next</a> |</li>
-        <li><a href="#">Ojota 1.1.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Ojota 2.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

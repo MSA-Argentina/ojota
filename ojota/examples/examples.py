@@ -68,23 +68,3 @@ class Place(OjotaHierarchy):
     required_fields = ("id", "name")
     default_order = ("id")
 
-
-
-if __name__ == "__main__":
-    #p = Person(id=1, name="juan", last_name = "perez", age=30)
-    #p.save()
-    persons = Person.all()
-    print persons
-    #print [p for p in persons]
-    #print [p for p in persons.many(age=35)]
-    #print persons.one(age=35)
-    #print persons[0:1]
-    #print persons[0]
-    #print persons[0:2]
-
-    places = Place.all()
-    print [p.parent for p in Place.all()]
-    print places[1].is_sibling(places[4])
-    print [p for p in places[1].children()]
-
-

@@ -1,55 +1,14 @@
-Modules Reference
-=================
+Examples
+========
 
-base
-____
+Examples for data stored locally
+________________________________
 
-.. autoclass:: base.Relation
-    :members:
-.. autoclass:: base.MetaOjota
-    :members:
-.. autoclass:: base.Ojota
-    :members:
-    :private-members:
-    :special-members:
+.. literalinclude:: ../examples/examples.py
 
-sources
-_______
+Examples for data taken through Web Service
+___________________________________________
 
- .. autoclass:: sources.Source
-    :members:
-    :private-members:
-    :special-members:
+* includes web service example
 
- .. autoclass:: sources.JSONSource
-    :members:
-    :private-members:
-    :special-members:
-
- .. autoclass:: sources.YAMLSource
-    :members:
-    :private-members:
-    :special-members:
-
- .. autoclass:: sources.WebServiceSource
-    :members:
-    :private-members:
-    :special-members:
-
-cache
-_____
-
- .. autoclass:: cache.Cache
-    :members:
-    :private-members:
-    :special-members:
-
- .. autoclass:: cache.Memcache
-    :members:
-    :private-members:
-    :special-members:
-
- .. autoclass:: cache.DummyCache
-    :members:
-    :private-members:
-    :special-members:
+.. literalinclude:: ../examples/example_ws.py

@@ -527,7 +527,6 @@ class Ojota(object):
 
 
 class OjotaHierarchy(Ojota):
-
     @property
     def segments(self):
         return self.primary_key.split(".")
