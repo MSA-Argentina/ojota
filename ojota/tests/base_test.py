@@ -27,14 +27,14 @@ class OjotaTest(TestCase):
     def test_repr(self):
         """Testing repr."""
         expected = "Person<1>"
-        person = Person.get('1')
+        person = Person.one('1')
         self.assertEqual(expected, str(person))
 
     def test_all(self):
         """Testing the all method."""
         expected_len = 3
         expected_order = ['1', '3', '2']
-        persons = Person.all()
+        persons = Person.many()
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
         self.assertEqual(expected_order, result)
@@ -43,7 +43,7 @@ class OjotaTest(TestCase):
         """Testing the all method with order."""
         expected_len = 3
         expected_order = ['1', '2', '3']
-        persons = Person.all(sorted="id")
+        persons = Person.many(sorted="id")
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
         self.assertEqual(expected_order, result)
@@ -52,7 +52,7 @@ class OjotaTest(TestCase):
         """Testing the all method with reverse order."""
         expected_len = 3
         expected_order = ['3', '2', '1']
-        persons = Person.all(sorted="-id")
+        persons = Person.many(sorted="-id")
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
         self.assertEqual(expected_order, result)
@@ -61,7 +61,7 @@ class OjotaTest(TestCase):
         """Testing the all method with multiple order."""
         expected_len = 3
         expected_order = ['3', '1', '2']
-        persons = Person.all(sorted="country_id,-address")
+        persons = Person.many(sorted="country_id,-address")
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
         self.assertEqual(expected_order, result)
@@ -70,7 +70,7 @@ class OjotaTest(TestCase):
         """Testing the all method with filters."""
         expected_len = 1
         expected_order = ['1']
-        persons = Person.all(id='1')
+        persons = Person.many(id='1')
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
         self.assertEqual(expected_order, result)
@@ -78,34 +78,34 @@ class OjotaTest(TestCase):
     def test_get_pk(self):
         """Testing the get method with pk."""
         pk = '1'
-        person = Person.get(pk)
+        person = Person.one(pk)
         self.assertEqual(pk, person.primary_key)
 
     def test_get_pk_param(self):
         """Testing the get method with pk as param."""
         pk = '1'
-        person = Person.get(pk=pk)
+        person = Person.one(pk=pk)
         self.assertEqual(pk, person.primary_key)
 
-        person = Person.get(id=pk)
+        person = Person.one(id=pk)
         self.assertEqual(pk, person.primary_key)
 
     def test_get_wrong_pk(self):
         """Testing the get method with wrong pk."""
         pk = '0'
-        person = Person.get(pk=pk)
+        person = Person.one(pk=pk)
         self.assertIsNone(person)
 
     def test_get_no_pk(self):
         """Testing the get method with no pk."""
         pk = '1'
-        person = Person.get(country_id='1')
+        person = Person.one(country_id='1')
         self.assertEqual(pk, person.primary_key)
 
     def test_get_no_pk_no_result(self):
         """Testing the get method that has no result."""
         pk = '1'
-        person = Person.get(country_id='10')
+        person = Person.one(country_id='10')
         self.assertIsNone(person)
 
     def test_get_with_cmd(self):
@@ -124,15 +124,15 @@ class OjotaTest(TestCase):
             data_source = MockSource()
 
         pk = '1'
-        person = Person.get(pk)
+        person = Person.one(pk)
         self.assertEqual(pk, person.primary_key)
 
     def test_eq(self):
         """Testing equality between Ojota classes."""
-        person1a = Person.get('1')
-        person1b = Person.get('1')
-        person2 = Person.get('2')
-        team = Team.get('1')
+        person1a = Person.one('1')
+        person1b = Person.one('1')
+        person2 = Person.one('2')
+        team = Team.one('1')
 
         self.assertEqual(person1a, person1b)
         self.assertNotEqual(person1a, person2)
@@ -143,7 +143,7 @@ class OjotaTest(TestCase):
         expected = {'name': 'Ezequiel', 'age': 25, 'country_id': '1',
                     'height': 120, 'team_id': '1', 'address': 'Lujan 1432',
                     'id': '1'}
-        person = Person.get('1')
+        person = Person.one('1')
         result = person.to_dict()
         self.assertEqual(expected, result)
 
@@ -387,7 +387,7 @@ class RelationsTest(TestCase):
             team = Relation("team_id", Team)
             plural_name = "Persons"
 
-        person = Person2.get('1')
+        person = Person2.one('1')
         self.assertEqual('1', person.team.primary_key)
 
     def test_reverse_relation(self):
@@ -396,10 +396,10 @@ class RelationsTest(TestCase):
             team = Relation("team_id", Team, "persons")
             plural_name = "Persons"
 
-        person = Person2.get('1')
+        person = Person2.one('1')
         self.assertEqual('1', person.team.primary_key)
 
-        persons = Team.get('1').persons
+        persons = Team.one('1').persons
 
         self.assertEqual(2, len(persons))
         self.assertEqual('1', persons[0].id)

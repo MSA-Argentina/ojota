@@ -14,13 +14,14 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
+from collections import MutableSequence
 from json import dumps
+from threading import current_thread
 
 import ojota.sources
 
 from ojota.sources import JSONSource
 from ojota.cache import Cache
-from threading import current_thread
 
 
 def current_data_code(data_code):
@@ -62,7 +63,7 @@ class Relation(object):
         def _inner(method_self):
             """Inner function to return the property for the relation."""
             fk = getattr(method_self, self.attr_fk)
-            return self.to_class.get(fk)
+            return self.to_class.one(fk)
 
         ret = property(_inner)
         return ret
@@ -75,7 +76,7 @@ class Relation(object):
             relation."""
             pk = method_self.primary_key
             params = {self.attr_fk: pk}
-            return from_class.all(**params)
+            return from_class.many(**params)
 
         if self.related_name:
             prop = property(_inner)
@@ -133,12 +134,12 @@ class WSRelation(Relation):
                 plural_name = method_self.plural_name
             if not self.ws_call:
                 _klass.data_source.get_all_cmd = self.ws_call
-                ret = _klass.get(getattr(method_self, self.attr_fk))
+                ret = _klass.one(getattr(method_self, self.attr_fk))
             else:
                 _klass.__class__.plural_name = "/".join(
                     (plural_name, getattr(method_self, self.attr_fk)))
                 _klass.data_source.get_all_cmd = self.ws_call
-                ret = _klass.all()
+                ret = _klass.many()
             _klass.__class__.plural_name = self.__plural_name
             _klass.data_source.get_all_cmd = self.__get_all_cmd
             return ret
@@ -146,7 +147,7 @@ class WSRelation(Relation):
         def _inner(method_self):
             """Inner function to return the property for the relation."""
             fk = getattr(method_self, self.attr_fk)
-            return self.to_class.get(fk)
+            return self.to_class.one(fk)
 
         if self.ws_call is not None:
             ret = property(_ws_inner)
@@ -257,7 +258,8 @@ class Ojota(object):
     @classmethod
     def _objetize(cls, data):
         """Return the data into an element."""
-        return [cls(**element_data) for element_data in data]
+        return OjotaSet(cls, data)
+        #return [cls(**element_data) for element_data in data]
 
     @classmethod
     def _test_expression(cls, expression, value, element_data):
@@ -364,7 +366,11 @@ class Ojota(object):
         return data_list
 
     @classmethod
-    def all(cls, **kargs):
+    def all(cls):
+        return cls.many()
+
+    @classmethod
+    def many(cls, **kargs):
         """Returns all the elements that match the conditions."""
         elements = cls._read_all_from_datasource().values()
         order_fields = cls.default_order
@@ -383,7 +389,7 @@ class Ojota(object):
         return list_
 
     @classmethod
-    def get(cls, pk=None, **kargs):
+    def one(cls, pk=None, **kargs):
         """Returns the first element that matches the conditions."""
         element = None
         if pk is not None:
@@ -398,9 +404,9 @@ class Ojota(object):
                 if pk in all_elems:
                     element = cls(**all_elems[pk])
         else:
-            result = cls.all(**kargs)
+            result = cls.many(**kargs)
             if result:
-                return result[0]
+                element = result[0]
 
         return element
 
@@ -431,7 +437,7 @@ class Ojota(object):
 
     def dump_values(self, new_data=None, delete=False):
         """Saves the data into a file."""
-        elements = self.__class__.all()
+        elements = self.__class__.many()
         json_data = []
         for element in elements:
             if element == self:
@@ -466,11 +472,57 @@ class Ojota(object):
                 if attr_name not in ojota_fields:
                     self.fields.append(attr_name)
                     new_data[attr_name] = attr_value
-            if self.__class__.get(self.primary_key) is None:
+            if self.__class__.one(self.primary_key) is None:
                 self.dump_values(new_data)
             else:
                 self.update(**new_data)
 
     @classmethod
     def preload(cls):
-        cls.all()
+        cls.many()
+
+
+class OjotaSet(MutableSequence):
+    def __init__(self, ojota_class, data):
+        super(OjotaSet, self).__init__()
+        self._list = list(data)
+        self.ojota_class = ojota_class
+
+    def __len__(self):
+        return len(self._list)
+
+    def __getitem__(self, indexes):
+        if isinstance(indexes, slice):
+            list_ = self._list[indexes.start:indexes.stop:indexes.step]
+            ret = OjotaSet(self.ojota_class, list_)
+        else:
+            ret = self.ojota_class(**self._list[indexes])
+
+        return ret
+
+    def __delitem__(self, ii):
+        del self._list[ii]
+
+    def __setitem__(self, ii, val):
+        return self._list[ii]
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return "OjotaSet containing %s %s" % (len(self._list),
+                                              self.ojota_class.plural_name)
+
+    def insert(self, ii, val):
+        self._list.insert(ii, val)
+
+    def append(self, val):
+        list_idx = len(self._list)
+        self.insert(list_idx, val)
+
+    def many(self, **kwargs):
+        elems = self.ojota_class._filter(self._list, kwargs)
+        return OjotaSet(self.ojota_class, elems)
+
+    def one(self, **kwargs):
+        return self.ojota_class.one(**kwargs)

@@ -64,6 +64,10 @@ class OtherPeople(Ojota):
 if __name__ == "__main__":
     #p = Person(id=1, name="juan", last_name = "perez", age=30)
     #p.save()
-    p = Person.all()
-    print p
-    print p[0].age_str
+    persons = Person.all()
+    print [p for p in persons]
+    print [p for p in persons.many(age=35)]
+    print persons.one(age=35)
+    print persons[0:1]
+    print persons[0]
+    print persons[0:2]
