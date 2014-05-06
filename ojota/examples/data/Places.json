@@ -1,0 +1,37 @@
+[
+    {
+      "id": "BA",
+      "name": "Buenos Aires",
+      "type": "Province"
+    },
+    {
+      "id": "BA.01",
+      "name": "Buenos Aires Norte",
+      "type": "Zone"
+    },
+    {
+      "id": "BA.02",
+      "name": "Buenos Aires Sur",
+      "type": "Zone"
+    },
+    {
+      "id": "BA.01.01",
+      "name": "San Isidro",
+      "type": "City"
+    },
+    {
+      "id": "BA.01.02",
+      "name": "Tigre",
+      "type": "City"
+    },
+    {
+      "id": "BA.02.01",
+      "name": "Mar del Plata",
+      "type": "City"
+    },
+    {
+      "id": "BA.02.02",
+      "name": "Tandil",
+      "type": "City"
+    }
+]

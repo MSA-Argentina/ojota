@@ -86,7 +86,6 @@ class Relation(object):
 
 class Callback(object):
     def __init__(self, field_name, function):
-        print field_name, function
         self.field_name = field_name
         self.function = function
 
@@ -156,6 +155,52 @@ class WSRelation(Relation):
         return ret
 
 
+class OjotaSet(MutableSequence):
+    def __init__(self, ojota_class, data):
+        super(OjotaSet, self).__init__()
+        self._list = list(data)
+        self.ojota_class = ojota_class
+
+    def __len__(self):
+        return len(self._list)
+
+    def __getitem__(self, indexes):
+        if isinstance(indexes, slice):
+            list_ = self._list[indexes.start:indexes.stop:indexes.step]
+            ret = OjotaSet(self.ojota_class, list_)
+        else:
+            ret = self.ojota_class(**self._list[indexes])
+
+        return ret
+
+    def __delitem__(self, ii):
+        del self._list[ii]
+
+    def __setitem__(self, ii, val):
+        return self._list[ii]
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return "OjotaSet containing %s %s" % (len(self._list),
+                                              self.ojota_class.plural_name)
+
+    def insert(self, ii, val):
+        self._list.insert(ii, val)
+
+    def append(self, val):
+        list_idx = len(self._list)
+        self.insert(list_idx, val)
+
+    def many(self, **kwargs):
+        elems = self.ojota_class._filter(self._list, kwargs)
+        return OjotaSet(self.ojota_class, elems)
+
+    def one(self, **kwargs):
+        return self.ojota_class.one(**kwargs)
+
+
 class MetaOjota(type):
     """Metaclass for Ojota"""
     def __init__(self, *args, **kwargs):
@@ -184,6 +229,7 @@ class Ojota(object):
     cache = Cache()
     data_source = JSONSource()
     default_order = None
+    queryset_type = OjotaSet
 
     @property
     def primary_key(self):
@@ -258,8 +304,7 @@ class Ojota(object):
     @classmethod
     def _objetize(cls, data):
         """Return the data into an element."""
-        return OjotaSet(cls, data)
-        #return [cls(**element_data) for element_data in data]
+        return cls.queryset_type(cls, data)
 
     @classmethod
     def _test_expression(cls, expression, value, element_data):
@@ -362,7 +407,7 @@ class Ojota(object):
                 reverse = False
 
             data_list = sorted(data_list, key=lambda e:
-                               getattr(e, order_field), reverse=reverse)
+                               e.get(order_field), reverse=reverse)
         return data_list
 
     @classmethod
@@ -381,11 +426,10 @@ class Ojota(object):
         if kargs:
             elements = cls._filter(elements, kargs)
 
-        list_ = cls._objetize(elements)
-
         if order_fields:
-            list_ = cls._sort(list_, order_fields)
+            elements = cls._sort(elements, order_fields)
 
+        list_ = cls._objetize(elements)
         return list_
 
     @classmethod
@@ -482,47 +526,56 @@ class Ojota(object):
         cls.many()
 
 
-class OjotaSet(MutableSequence):
-    def __init__(self, ojota_class, data):
-        super(OjotaSet, self).__init__()
-        self._list = list(data)
-        self.ojota_class = ojota_class
+class OjotaHierarchy(Ojota):
 
-    def __len__(self):
-        return len(self._list)
+    @property
+    def segments(self):
+        return self.primary_key.split(".")
 
-    def __getitem__(self, indexes):
-        if isinstance(indexes, slice):
-            list_ = self._list[indexes.start:indexes.stop:indexes.step]
-            ret = OjotaSet(self.ojota_class, list_)
+    @property
+    def root(self):
+        return self.segments[0]
+
+    @property
+    def last_segment(self):
+        return self.segments[-1]
+
+    @property
+    def parent(self):
+        if len(self.segments) > 1:
+            return self.one('.'.join(self.segments[:-1]))
         else:
-            ret = self.ojota_class(**self._list[indexes])
+            return None
 
-        return ret
+    def is_parent(self, other):
+       parent_id = '.'.join(self.segments[:-1])
+       return parent_id == other.primary_key
 
-    def __delitem__(self, ii):
-        del self._list[ii]
+    def is_ancestor(self, other):
+        if self.primary_key.startswith(other.primary_key):
+            return True
+        else:
+            return False
 
-    def __setitem__(self, ii, val):
-        return self._list[ii]
+    def is_sibling(self, other):
+        return self.segments[:-1] == other.segments[:-1]
 
-    def __str__(self):
-        return self.__repr__()
+    def siblings(self):
+        args = {"%s__startswith" % self.pk_field: self.parent.primary_key}
+        elements = self.many(**args)
+        list_ = []
+        for element in elements:
+            if element.is_parent(self.parent):
+                list_.append(element)
 
-    def __repr__(self):
-        return "OjotaSet containing %s %s" % (len(self._list),
-                                              self.ojota_class.plural_name)
+        return list_
 
-    def insert(self, ii, val):
-        self._list.insert(ii, val)
+    def children(self):
+        args = {"%s__startswith" % self.pk_field: self.primary_key}
+        elements = self.many(**args)
+        list_ = []
+        for element in elements:
+            if element.is_parent(self):
+                list_.append(element)
 
-    def append(self, val):
-        list_idx = len(self._list)
-        self.insert(list_idx, val)
-
-    def many(self, **kwargs):
-        elems = self.ojota_class._filter(self._list, kwargs)
-        return OjotaSet(self.ojota_class, elems)
-
-    def one(self, **kwargs):
-        return self.ojota_class.one(**kwargs)
+        return list_

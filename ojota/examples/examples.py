@@ -17,9 +17,10 @@ This file is part of Ojota.
 import os
 
 from ojota import Ojota, Relation, set_data_source, Callback
-from ojota.sources import YAMLSource, CSVSource, XLSSource
-from ojota.examples.example_ws import Country, Flag
+from ojota.base import OjotaHierarchy
 from ojota.cache import Memcache
+from ojota.examples.example_ws import Country, Flag
+from ojota.sources import YAMLSource, CSVSource, XLSSource
 
 file_path = (os.path.dirname(os.path.abspath(__file__)))
 set_data_source(os.path.join(file_path, "data"))
@@ -61,18 +62,29 @@ class OtherPeople(Ojota):
     required_fields = ("id", "name", "last_name", "age")
 
 
-class Place(Ojota):
+class Place(OjotaHierarchy):
     plural_name = "Places"
+    pk_field = "id"
     required_fields = ("id", "name")
+    default_order = ("id")
+
 
 
 if __name__ == "__main__":
     #p = Person(id=1, name="juan", last_name = "perez", age=30)
     #p.save()
     persons = Person.all()
-    print [p for p in persons]
-    print [p for p in persons.many(age=35)]
-    print persons.one(age=35)
-    print persons[0:1]
-    print persons[0]
-    print persons[0:2]
+    print persons
+    #print [p for p in persons]
+    #print [p for p in persons.many(age=35)]
+    #print persons.one(age=35)
+    #print persons[0:1]
+    #print persons[0]
+    #print persons[0:2]
+
+    places = Place.all()
+    print [p.parent for p in Place.all()]
+    print places[1].is_sibling(places[4])
+    print [p for p in places[1].children()]
+
+
