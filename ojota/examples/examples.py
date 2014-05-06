@@ -61,6 +61,11 @@ class OtherPeople(Ojota):
     required_fields = ("id", "name", "last_name", "age")
 
 
+class Place(Ojota):
+    plural_name = "Places"
+    required_fields = ("id", "name")
+
+
 if __name__ == "__main__":
     #p = Person(id=1, name="juan", last_name = "perez", age=30)
     #p.save()
