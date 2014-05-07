@@ -166,7 +166,7 @@ class OjotaSet(MutableSequence):
 
     def __getitem__(self, indexes):
         if isinstance(indexes, slice):
-            list_ = self._list[indexes.start:indexes.stop:indexes.step]
+            list_ = self._list[indexes]
             ret = OjotaSet(self.ojota_class, list_)
         else:
             ret = self.ojota_class(**self._list[indexes])
