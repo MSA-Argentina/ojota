@@ -37,6 +37,12 @@ try:
 except ImportError:
     openpyxl_imported = False
 
+try:
+    import dson
+    dson_imported = True
+except ImportError:
+    dson_imported = False
+
 
 _DATA_SOURCE = "data"
 
@@ -354,3 +360,45 @@ class XLSSource(Source):
                 ws.cell('%s%s' % (col, row)).value = element.get(key)
 
         wb.save(filename=dest_filename)
+
+
+class DSONSource(Source):
+    """Source class for the data stored with JSON format"""
+    def read_elements(self, cls, filepath):
+        """Reads the elements form a DSON file. Returns a dictionary containing
+        the read data.
+
+        Arguments:
+            filepath -- the path for the dson file.
+        """
+        if dson_imported:
+            dson_path = '%s.dson' % filepath
+            try:
+                dson_file = open(dson_path, 'r')
+            except IOError:
+                dson_file = open(dson_path, 'w')
+                dson_file.write("[]")
+                dson_file.close()
+                dson_file = open(dson_path, 'r')
+
+            data = dson.load(dson_file)
+            try:
+                elements = dict((element_data[cls.pk_field], element_data)
+                                for element_data in data)
+            except KeyError:
+                msg = "Primary key was not found. Check that you have "
+                msg += "configured the class correctly. In case you "
+                msg += "have check your data source"
+                raise AttributeError(msg)
+        else:
+            msg = "In order to use YAML sources you should install "
+            msg += " the 'dogeon' package"
+            raise Exception(msg)
+
+        return elements
+
+    def write_elements(self, filepath, data):
+        data_set = open('%s.dson' % filepath, 'w')
+        dson_data = dson.dumps(data, indent=4)
+        data_set.write(dson_data)
+        data_set.close()

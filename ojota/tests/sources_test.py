@@ -4,7 +4,7 @@ from unittest.case import TestCase
 
 from ojota import Ojota
 from ojota.base import set_data_source, current_data_code
-from ojota.sources import Source, JSONSource, YAMLSource
+from ojota.sources import Source, JSONSource, YAMLSource, DSONSource
 
 
 class SourceTest(TestCase):
@@ -96,6 +96,31 @@ class JsonSourceTest(TestCase):
                            'id': '2'}}
 
         source = JSONSource()
+        result = source.read_elements(Person, source._get_file_path(Person))
+        self.assertEqual(expected, result)
+
+
+class DsonSourceTest(TestCase):
+    def test_read_elements(self):
+        """Testing the element loading from JSON."""
+        file_path = (os.path.dirname(os.path.abspath(__file__)))
+        set_data_source(os.path.join(file_path, "data", "doge"))
+
+        class Person(Ojota):
+            pk_field = "id"
+
+        expected = {'1': {'name': 'Ezequiel', 'age': 25,
+                           'country_id': '1', 'height': 120,
+                           'team_id': '1', 'address': 'Lujan 1432',
+                           'id': '1'},
+                    '3': {'name': 'Juan Carlos', 'age': 35,
+                           'country_id': '0', 'team_id': '1',
+                           'address': 'Spam 3092', 'id': '3'},
+                    '2': {'name': 'Matias', 'age': 35, 'country_id': '1',
+                           'team_id': '2', 'address': 'Che Guevara 1875',
+                           'id': '2'}}
+
+        source = DSONSource()
         result = source.read_elements(Person, source._get_file_path(Person))
         self.assertEqual(expected, result)
 

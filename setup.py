@@ -10,9 +10,9 @@ except ImportError:
 
 setup(
     name='Ojota',
-    version='2.0.0',
+    version='2.0.1',
     author='Felipe Lerena, Juan Pedro Fisanoti, Ezequiel Chan, Nicolas Sarubbi, Hernan Lozano, Nicolas Bases, Franco Mariluis',
-    author_email='flerena@msa.com.ar, fisadev@gmail.com, echan@msa.com.ar, nicosarubi@gmail.com, hernantz@gmail.com, nmbases@gmai.com, fmariluis@fmail.com',
+    author_email='flerena@msa.com.ar, fisadev@gmail.com, echan@msa.com.ar, nicosarubi@gmail.com, hernantz@gmail.com, nmbases@gmail.com, fmariluis@gmail.com',
     packages=['ojota'],
     scripts=[],
     url='http://pypi.python.org/pypi/Ojota/',
