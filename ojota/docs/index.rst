@@ -8,7 +8,7 @@ Welcome to Ojota's documentation!
 
 Ojota is a ORM and flat file database engine.
 
-Ojota is Free Software! you can check the code at http://bitbucket.org/msa_team/ojota
+Ojota is Free Software! you can check the code at https://github.com/MSA-Argentina/ojota 
 
 
 How does it works?
