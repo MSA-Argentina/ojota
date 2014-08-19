@@ -18,6 +18,6 @@ setup(
     url='http://pypi.python.org/pypi/Ojota/',
     license='LICENSE.txt',
     description='Flat File Database with ORM',
-    long_description=open('README.txt').read(),
+    long_description=open('README.rst').read(),
     install_requires=[],
 )
