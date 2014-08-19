@@ -90,7 +90,7 @@ From source
 
 .. code-block:: bash
 
-    hg clone ssh://hg@bitbucket.org/msa_team/ojota
+    git clone https://github.com/MSA-Argentina/ojota.git
     sudo python setup.py install
 
 Optional dependencies
