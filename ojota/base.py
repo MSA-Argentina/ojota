@@ -166,7 +166,7 @@ class OjotaSet(MutableSequence):
 
     def __getitem__(self, indexes):
         if isinstance(indexes, slice):
-            list_ = self._list[indexes]
+            list_ = self._list[indexes.start:indexes.stop:indexes.step]
             ret = OjotaSet(self.ojota_class, list_)
         else:
             ret = self.ojota_class(**self._list[indexes])
@@ -364,7 +364,7 @@ class Ojota(object):
                 raise AttributeError(
                     "The operation %s does not exist" % operation)
         except KeyError:
-            raise AttributeError("The field %s does not exist" % field)
+            r = False
         # TODO date operations
         # TODO regex operations
         return r
@@ -527,6 +527,7 @@ class Ojota(object):
 
 
 class OjotaHierarchy(Ojota):
+
     @property
     def segments(self):
         return self.primary_key.split(".")
