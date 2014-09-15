@@ -177,7 +177,7 @@ class OjotaSet(MutableSequence):
         del self._list[ii]
 
     def __setitem__(self, ii, val):
-        return self._list[ii]
+        raise NotImplementedError
 
     def __str__(self):
         return self.__repr__()
