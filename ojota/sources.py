@@ -49,13 +49,14 @@ _DATA_SOURCE = "data"
 
 class Source(object):
     """Base class for all the data sources."""
-    def __init__(self, data_path=None):
+    def __init__(self, data_path=None, create_empty=True):
         """Constructor for the Source class.
 
         Arguments:
         data_path -- the path where the data is located.
         """
         self.data_path = data_path
+        self.create_empty = create_empty
 
     def _get_file_path(self, cls):
         """Builds the path where the data will be located.
@@ -101,7 +102,7 @@ class Source(object):
             pk - the primary key of the given element.
         """
         file_path = self._get_file_path(cls)
-        return self.write_elements(file_path, data)
+        self.write_elements(file_path, data)
 
     def read_elements(self, cls, filepath):
         raise NotImplementedError
@@ -125,13 +126,16 @@ class JSONSource(Source):
         json_path = '%s.json' % filepath
         try:
             json_file = open(json_path, 'r')
+            data = json.load(json_file)
         except IOError:
-            json_file = open(json_path, 'w')
-            json_file.write("[]")
-            json_file.close()
-            json_file = open(json_path, 'r')
-
-        data = json.load(json_file)
+            if self.create_empty:
+                json_file = open(json_path, 'w')
+                json_file.write("[]")
+                json_file.close()
+                json_file = open(json_path, 'r')
+                data = json.load(json_file)
+            else:
+                data = []
         try:
             elements = dict((element_data[cls.pk_field], element_data)
                             for element_data in data)
