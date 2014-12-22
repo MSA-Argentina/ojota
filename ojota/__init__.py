@@ -15,5 +15,5 @@ This file is part of Ojota.
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from base import Ojota, Relation, current_data_code, set_data_source, \
+from .base import Ojota, Relation, current_data_code, set_data_source, \
     Callback, OjotaSet
