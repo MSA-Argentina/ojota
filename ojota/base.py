@@ -230,6 +230,8 @@ class Ojota(object):
     data_source = JSONSource()
     default_order = None
     queryset_type = OjotaSet
+    prefilter = None
+    cache_name = None
 
     @property
     def primary_key(self):
@@ -268,7 +270,10 @@ class Ojota(object):
 
     @classmethod
     def get_cache_name(cls):
-        cache_name = '_cache_' + cls.get_plural_name()
+        if cls.cache_name is not None:
+            cache_name = '_cache_' + cls.cache_name
+        else:
+            cache_name = '_cache_' + cls.get_plural_name()
         if not cls.data_in_root and get_current_data_code():
             cache_name += '_' + get_current_data_code()
         return cache_name
@@ -282,6 +287,12 @@ class Ojota(object):
 
         if cache_name not in cls.cache:
             elements = cls.data_source.fetch_elements(cls)
+            if cls.prefilter is not None:
+                elements_ = cls._filter(elements.values(), cls.prefilter)
+                elements = {}
+                for elem in elements_:
+                    elements[elem[cls.pk_field]] = elem
+
             cls.cache.set(name=cache_name, elems=elements)
         else:
             elements = cls.cache.get(cache_name)
