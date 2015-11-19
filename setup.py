@@ -19,5 +19,5 @@ setup(
     license='LICENSE.txt',
     description='Flat File Database with ORM',
     long_description=open('README.rst').read(),
-    install_requires=[],
+    install_requires=['six'],
 )
