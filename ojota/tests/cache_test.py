@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from unittest.case import TestCase
 
 from ojota.cache import Cache, DummyCache

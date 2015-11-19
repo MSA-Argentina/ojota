@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 
 from threading import Thread
@@ -24,13 +26,13 @@ class OjotaTest(TestCase):
 
         def thread1_test(data_code):
             current_data_code(data_code)
-            print "data code 1", get_current_data_code()
+            print("data code 1", get_current_data_code())
             sleep(1)
-            print "data code 2", get_current_data_code()
+            print("data code 2", get_current_data_code())
 
         def thread2_test(data_code):
             current_data_code(data_code)
-            print "data code 3", get_current_data_code()
+            print("data code 3", get_current_data_code())
 
         p1 = Thread(target=thread1_test, args=('', ))
         p1.start()

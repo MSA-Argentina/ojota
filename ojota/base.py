@@ -14,6 +14,7 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
+from __future__ import absolute_import
 from collections import MutableSequence
 from json import dumps
 from threading import current_thread
@@ -22,6 +23,7 @@ import ojota.sources
 
 from ojota.sources import JSONSource
 from ojota.cache import Cache
+import six
 
 
 def current_data_code(data_code):
@@ -206,7 +208,7 @@ class MetaOjota(type):
     def __init__(self, *args, **kwargs):
         self.relations = {}
         self.backwards_relations = []
-        for attr, value in self.__dict__.items():
+        for attr, value in list(self.__dict__.items()):
             if isinstance(value, Relation):
                 value.set_reversed_property(self)
                 setattr(self, attr, value.get_property())
@@ -217,10 +219,9 @@ class MetaOjota(type):
         return super(MetaOjota, self).__init__(*args, **kwargs)
 
 
-class Ojota(object):
+class Ojota(six.with_metaclass(MetaOjota, object)):
     """Base class to create instances of serialized data in the source files.
     """
-    __metaclass__ = MetaOjota
     _data_codes = {}
     plural_name = None
     data_in_root = True
@@ -260,7 +261,7 @@ class Ojota(object):
         for key in self.required_fields:
             if key not in kwargs:
                 raise AttributeError("The field '%s' is required" % key)
-        for key, val in kwargs.items():
+        for key, val in list(kwargs.items()):
             self.fields.append(key)
             setattr(self, key, val)
 
@@ -288,7 +289,7 @@ class Ojota(object):
         if cache_name not in cls.cache:
             elements = cls.data_source.fetch_elements(cls)
             if cls.prefilter is not None:
-                elements_ = cls._filter(elements.values(), cls.prefilter)
+                elements_ = cls._filter(list(elements.values()), cls.prefilter)
                 elements = {}
                 for elem in elements_:
                     elements[elem[cls.pk_field]] = elem
@@ -391,7 +392,7 @@ class Ojota(object):
         filtrados = []
         for element_data in data:
             add = True
-            for expression, value in filters.items():
+            for expression, value in list(filters.items()):
                 if not cls._test_expression(expression, value, element_data):
                     add = False
                     break
@@ -418,7 +419,7 @@ class Ojota(object):
                 reverse = False
 
             data_list = sorted(data_list, key=lambda e:
-                               e.get(order_field), reverse=reverse)
+                               e.get(order_field, ""), reverse=reverse)
         return data_list
 
     @classmethod
@@ -428,7 +429,7 @@ class Ojota(object):
     @classmethod
     def many(cls, **kargs):
         """Returns all the elements that match the conditions."""
-        elements = cls._read_all_from_datasource().values()
+        elements = list(cls._read_all_from_datasource().values())
         order_fields = cls.default_order
         if 'sorted' in kargs:
             order_fields = kargs['sorted']
@@ -449,7 +450,7 @@ class Ojota(object):
         element = None
         if pk is not None:
             kargs[cls.pk_field] = pk
-        if kargs.keys() == [cls.pk_field]:
+        if list(kargs.keys()) == [cls.pk_field]:
             pk = kargs[cls.pk_field]
             if hasattr(cls.data_source, 'get_cmd'):
                 elem = cls._read_item_from_datasource(pk)
@@ -461,7 +462,10 @@ class Ojota(object):
         else:
             result = cls.many(**kargs)
             if result:
-                element = result[0]
+                if len(result) > 1:
+                    raise IndexError("one is returning more than one element")
+                else:
+                    element = result[0]
 
         return element
 
@@ -483,7 +487,7 @@ class Ojota(object):
 
     def update(self, **kwargs):
         """Updates the given values."""
-        for arg, value in kwargs.items():
+        for arg, value in list(kwargs.items()):
             if arg != self.pk_field:
                 if arg not in self.fields:
                     self.fields.append(arg)
@@ -521,9 +525,9 @@ class Ojota(object):
                         "backwards_relations")
         data = self.__dict__
 
-        if all([field in data.keys() for field in self.required_fields]):
+        if all([field in list(data.keys()) for field in self.required_fields]):
             new_data = {}
-            for attr_name, attr_value in data.items():
+            for attr_name, attr_value in list(data.items()):
                 if attr_name not in ojota_fields:
                     self.fields.append(attr_name)
                     new_data[attr_name] = attr_value

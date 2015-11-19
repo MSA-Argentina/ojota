@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 try:
     import memcache
     memcache_imported = True

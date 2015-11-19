@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 
 from ojota import Ojota, Relation, set_data_source
@@ -23,7 +24,7 @@ class Person(Ojota):
 
 if __name__ == "__main__":
 
-    p = Person.get("9")
+    p = Person.one("9")
     p.name = "juan"
     p.address = "hola"
     p.age = 10

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from unittest.case import TestCase
 
 from ojota import Ojota, current_data_code, set_data_source, sources

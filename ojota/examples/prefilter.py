@@ -14,6 +14,8 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 
 from ojota import set_data_source
@@ -41,6 +43,6 @@ class Zone(Place):
 
 
 if __name__ == '__main__':
-    print [city for city in Place.all()]
-    print [city for city in City.all()]
-    print [city for city in Zone.all()]
+    print([city for city in Place.all()])
+    print([city for city in City.all()])
+    print([city for city in Zone.all()])
