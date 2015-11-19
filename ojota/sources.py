@@ -14,8 +14,11 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import json
+from six.moves import zip
 
 try:
     import yaml
@@ -169,7 +172,7 @@ class YAMLSource(Source):
         if yaml_imported:
             datos = yaml.load(open('%s.yaml' % filepath, 'r'))
             elements = {}
-            for key, value in datos.items():
+            for key, value in list(datos.items()):
                 elements[value[cls.pk_field]] = value
         else:
             msg = "In order to use YAML sources you should install "
@@ -277,13 +280,13 @@ class CSVSource(Source):
         """
         data = open('%s.csv' % filepath, 'r')
         keys = data.readline().strip().split(self.separator)
-        dicts = [dict(zip(keys, elem.strip().split(
-            self.separator))) for elem in data]
+        dicts = [dict(list(zip(keys, elem.strip().split(
+            self.separator)))) for elem in data]
 
         try:
             elements = {}
             for element in dicts:
-                for key, value in element.items():
+                for key, value in list(element.items()):
                     if value == "":
                         del element[key]
                 elements[element[cls.pk_field]] = element
@@ -299,7 +302,7 @@ class CSVSource(Source):
         data_set = open('%s.csv' % filepath, 'w')
         keys = []
         for element in data:
-            keys.extend(element.keys())
+            keys.extend(list(element.keys()))
         keys = set(keys)
         lines = []
         lines.append(self.separator.join(keys) + "\n")
@@ -351,7 +354,7 @@ class XLSSource(Source):
 
         keys = []
         for element in data:
-            keys.extend(element.keys())
+            keys.extend(list(element.keys()))
         keys = list(set(keys))
         row = 1
         for col_index, key in enumerate(keys, 1):
@@ -395,7 +398,7 @@ class DSONSource(Source):
                 msg += "have check your data source"
                 raise AttributeError(msg)
         else:
-            msg = "In order to use YAML sources you should install "
+            msg = "In order to use dson sources you should install "
             msg += " the 'dogeon' package"
             raise Exception(msg)
 

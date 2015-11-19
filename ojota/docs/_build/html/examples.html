@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Examples &mdash; Ojota 2.0.0 documentation</title>
+    <title>Examples &mdash; Ojota 3.0.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.0.0',
+        VERSION:     '3.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,11 +23,11 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Ojota 2.0.0 documentation" href="index.html" />
+    <link rel="top" title="Ojota 3.0.0 documentation" href="index.html" />
     <link rel="prev" title="Modules Reference" href="module.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -36,14 +36,14 @@
         <li class="right" >
           <a href="module.html" title="Modules Reference"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Ojota 2.0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Ojota 3.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
@@ -65,6 +65,7 @@
 <span class="sd">    You should have received a copy of the GNU  Lesser General Public License</span>
 <span class="sd">    along with Ojota.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">ojota</span> <span class="kn">import</span> <span class="n">Ojota</span><span class="p">,</span> <span class="n">Relation</span><span class="p">,</span> <span class="n">set_data_source</span><span class="p">,</span> <span class="n">Callback</span>
@@ -142,6 +143,7 @@
 <span class="sd">    You should have received a copy of the GNU  Lesser General Public License</span>
 <span class="sd">    along with Ojota.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
 <span class="k">except</span><span class="p">:</span>
@@ -209,7 +211,7 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/ojota_logo.png" alt="Logo"/>
@@ -226,12 +228,14 @@
   <h4>Previous topic</h4>
   <p class="topless"><a href="module.html"
                         title="previous chapter">Modules Reference</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/examples.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/examples.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -248,7 +252,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -257,12 +261,12 @@
         <li class="right" >
           <a href="module.html" title="Modules Reference"
              >previous</a> |</li>
-        <li><a href="index.html">Ojota 2.0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Ojota 3.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2012 - 2014,  The Ojota Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2012 - 2015,  The Ojota Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

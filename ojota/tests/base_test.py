@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 
 from unittest.case import TestCase
@@ -33,11 +34,12 @@ class OjotaTest(TestCase):
     def test_all(self):
         """Testing the all method."""
         expected_len = 3
-        expected_order = ['1', '3', '2']
-        persons = Person.many()
+        expected_order = ['1', '2', '3']
+        persons = Person.all()
+        print(persons)
         self.assertEqual(expected_len, len(persons))
         result = [person.primary_key for person in persons]
-        self.assertEqual(expected_order, result)
+        self.assertEqual(expected_order, sorted(result))
 
     def test_all_order(self):
         """Testing the all method with order."""
@@ -96,15 +98,12 @@ class OjotaTest(TestCase):
         person = Person.one(pk=pk)
         self.assertIsNone(person)
 
-    def test_get_no_pk(self):
+    def test_raise_one_error(self):
         """Testing the get method with no pk."""
-        pk = '1'
-        person = Person.one(country_id='1')
-        self.assertEqual(pk, person.primary_key)
+        self.assertRaises(IndexError, Person.one)
 
     def test_get_no_pk_no_result(self):
         """Testing the get method that has no result."""
-        pk = '1'
         person = Person.one(country_id='10')
         self.assertIsNone(person)
 
@@ -155,14 +154,14 @@ class OjotaTest(TestCase):
 
         person = Person(**expected)
         self.assertEqual(expected, person.to_dict())
-        self.assertEqual(expected.keys(), person.fields)
+        self.assertEqual(sorted(list(expected.keys())), sorted(person.fields))
 
-        for key in expected.keys():
+        for key in list(expected.keys()):
             self.assertTrue(hasattr(person, key))
 
     def test_init_required(self):
         """Testing object init with no params."""
-        self.assertRaises(1, Person)
+        self.assertRaises(AttributeError, Person)
 
     def test_init_required_fields_id(self):
         """Testing required fields with id."""
@@ -286,11 +285,11 @@ class OjotaTest(TestCase):
         self.assertEqual(expected['1'], elements)
 
 
-
 class ExpressionTest(TestCase):
     def _test_expression(self, expresion, value, element_data, should_return):
         result = Person._test_expression(expresion, value, element_data)
         self.assertEqual(should_return, result)
+
     def test_expressions(self):
         """Testing expressions."""
         expresions = [
@@ -356,8 +355,7 @@ class ExpressionTest(TestCase):
 
     def test_no_field(self):
         """Testing field does not exist."""
-        self.assertRaises(AttributeError, Person._test_expression,
-                          "name__endswith", "uan", {})
+        self.assertFalse(Person._test_expression("name__endswith", "uan", {}))
 
     def test_no_operation(self):
         """Testing operation does not exist."""
@@ -395,6 +393,7 @@ class RelationsTest(TestCase):
         class Person2(Person):
             team = Relation("team_id", Team, "persons")
             plural_name = "Persons"
+            default_order = "id"
 
         person = Person2.one('1')
         self.assertEqual('1', person.team.primary_key)

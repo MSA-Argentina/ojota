@@ -14,6 +14,7 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
+from __future__ import absolute_import
 import os
 
 from ojota import Ojota, Relation, set_data_source, Callback
@@ -67,4 +68,3 @@ class Place(OjotaHierarchy):
     pk_field = "id"
     required_fields = ("id", "name")
     default_order = ("id")
-

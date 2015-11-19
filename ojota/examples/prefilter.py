@@ -15,6 +15,34 @@ This file is part of Ojota.
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import absolute_import
+from __future__ import print_function
+import os
 
-from .base import Ojota, Relation, current_data_code, set_data_source, \
-    Callback, OjotaSet
+from ojota import set_data_source
+from ojota.base import OjotaHierarchy
+
+file_path = (os.path.dirname(os.path.abspath(__file__)))
+set_data_source(os.path.join(file_path, "data"))
+
+
+class Place(OjotaHierarchy):
+    plural_name = "Places"
+    pk_field = "id"
+    required_fields = ("id", "name")
+    default_order = ("id")
+
+
+class City(Place):
+    prefilter = {"type": "City"}
+    cache_name = "City"
+
+
+class Zone(Place):
+    prefilter = {"type": "Zone"}
+    cache_name = "Zone"
+
+
+if __name__ == '__main__':
+    print([city for city in Place.all()])
+    print([city for city in City.all()])
+    print([city for city in Zone.all()])
