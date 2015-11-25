@@ -469,6 +469,12 @@ class Ojota(six.with_metaclass(MetaOjota, object)):
 
         return element
 
+    @classmethod
+    def first(cls, *args, **kwargs):
+        elements = cls.many(*args, **kwargs)
+        if elements is not None:
+            return elements[0]
+
     def __eq__(self, other):
         """Compare the equality of two elements."""
         same_pk = self.primary_key == other.primary_key
