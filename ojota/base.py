@@ -418,8 +418,13 @@ class Ojota(six.with_metaclass(MetaOjota, object)):
             else:
                 reverse = False
 
-            data_list = sorted(data_list, key=lambda e:
-                               e.get(order_field, ""), reverse=reverse)
+            def _key_func(item):
+                elem_data = item.get(order_field, "")
+                if elem_data is None:
+                    elem_data = ""
+                return elem_data
+
+            data_list = sorted(data_list, key=_key_func, reverse=reverse)
         return data_list
 
     @classmethod
