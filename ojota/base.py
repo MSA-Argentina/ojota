@@ -477,7 +477,7 @@ class Ojota(six.with_metaclass(MetaOjota, object)):
     @classmethod
     def first(cls, *args, **kwargs):
         elements = cls.many(*args, **kwargs)
-        if elements is not None:
+        if elements is not None and len(elements):
             return elements[0]
 
     def __eq__(self, other):
