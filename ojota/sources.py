@@ -130,6 +130,7 @@ class JSONSource(Source):
         try:
             json_file = open(json_path, 'r')
             data = json.load(json_file)
+            json_file.close()
         except IOError:
             if self.create_empty:
                 json_file = open(json_path, 'w')
@@ -137,6 +138,7 @@ class JSONSource(Source):
                 json_file.close()
                 json_file = open(json_path, 'r')
                 data = json.load(json_file)
+                json_file.close()
             else:
                 data = []
         try:
