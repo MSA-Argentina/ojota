@@ -10,7 +10,7 @@ except ImportError:
 
 setup(
     name='Ojota',
-    version='3.1.1',
+    version='3.1.2',
     author='Felipe Lerena, Juan Pedro Fisanoti, Ezequiel Chan, Nicolas Sarubbi, Hernan Lozano, Nicolas Bases, Franco Mariluis, Ezequiel Alvarez',
     author_email='flerena@msa.com.ar, fisadev@gmail.com, echan@msa.com.ar, nicosarubi@gmail.com, hernantz@gmail.com, nmbases@gmail.com, fmariluis@gmail.com, welcometothechango@gmail.com',
     packages=['ojota'],
