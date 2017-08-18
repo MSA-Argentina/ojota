@@ -119,6 +119,18 @@ class Source(object):
 
 class JSONSource(Source):
     """Source class for the data stored with JSON format"""
+
+    def __init__(self, data_path=None, create_empty=True, indent=4):
+        """Constructor for the Source class.
+
+        Arguments:
+            data_path -- the path where the data is located.
+            create_empty -- if file in data_path is not found, create an empty one.
+            indent -- control the indentation of the JSON in the file.
+        """
+        self.indent = indent
+        super(JSONSource, self).__init__(data_path, create_empty)
+
     def read_elements(self, cls, filepath):
         """Reads the elements form a JSON file. Returns a dictionary containing
         the read data.
@@ -154,7 +166,7 @@ class JSONSource(Source):
 
     def write_elements(self, filepath, data):
         data_set = open('%s.json' % filepath, 'w')
-        json_data = json.dumps(data, indent=4)
+        json_data = json.dumps(data, indent=self.indent)
         data_set.write(json_data)
         data_set.close()
 
