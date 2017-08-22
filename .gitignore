@@ -8,3 +8,9 @@ syntax: glob
 Ojota.egg-info
 build
 dist
+
+# Editors
+.idea/
+*.swo
+*.swp
+*~
