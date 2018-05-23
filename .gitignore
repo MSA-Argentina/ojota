@@ -4,6 +4,7 @@ syntax: glob
 .project
 .pydevproject
 .settings
+.pytest_cache
 
 Ojota.egg-info
 build
