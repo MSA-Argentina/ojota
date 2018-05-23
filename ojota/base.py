@@ -432,16 +432,16 @@ class Ojota(six.with_metaclass(MetaOjota, object)):
         return cls.many()
 
     @classmethod
-    def many(cls, **kargs):
+    def many(cls, **kwargs):
         """Returns all the elements that match the conditions."""
         elements = list(cls._read_all_from_datasource().values())
         order_fields = cls.default_order
-        if 'sorted' in kargs:
-            order_fields = kargs['sorted']
-            del kargs['sorted']
+        if 'sorted' in kwargs:
+            order_fields = kwargs['sorted']
+            del kwargs['sorted']
 
-        if kargs:
-            elements = cls._filter(elements, kargs)
+        if kwargs:
+            elements = cls._filter(elements, kwargs)
 
         if order_fields:
             elements = cls._sort(elements, order_fields)
@@ -450,13 +450,13 @@ class Ojota(six.with_metaclass(MetaOjota, object)):
         return list_
 
     @classmethod
-    def one(cls, pk=None, **kargs):
+    def one(cls, pk=None, **kwargs):
         """Returns the first element that matches the conditions."""
         element = None
         if pk is not None:
-            kargs[cls.pk_field] = pk
-        if list(kargs.keys()) == [cls.pk_field]:
-            pk = kargs[cls.pk_field]
+            kwargs[cls.pk_field] = pk
+        if list(kwargs.keys()) == [cls.pk_field]:
+            pk = kwargs[cls.pk_field]
             if hasattr(cls.data_source, 'get_cmd'):
                 elem = cls._read_item_from_datasource(pk)
                 element = cls._objetize([elem])[0]
@@ -465,7 +465,7 @@ class Ojota(six.with_metaclass(MetaOjota, object)):
                 if pk in all_elems:
                     element = cls(**all_elems[pk])
         else:
-            result = cls.many(**kargs)
+            result = cls.many(**kwargs)
             if result:
                 if len(result) > 1:
                     raise IndexError("one is returning more than one element")
