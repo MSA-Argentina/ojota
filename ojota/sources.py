@@ -14,11 +14,9 @@ This file is part of Ojota.
     You should have received a copy of the GNU  Lesser General Public License
     along with Ojota.  If not, see <http://www.gnu.org/licenses/>.
 """
-from __future__ import absolute_import
-from __future__ import print_function
 import os
 import json
-from six.moves import zip
+import csv
 
 try:
     import yaml
@@ -280,23 +278,23 @@ class WebServiceSource(Source):
 
 
 class CSVSource(Source):
+    """Source class for the data stored in CSV format."""
     def __init__(self, data_path=None, separator=","):
         Source.__init__(self, data_path=data_path)
         self.separator = separator
 
-    """Source class for the data stored with JSON format"""
     def read_elements(self, cls, filepath):
-        """Reads the elements form a JSON file. Returns a dictionary containing
-        the read data.
+        """Reads the elements from a CSV file. Returns a dictionary.
 
         Arguments:
             filepath -- the path for the json file.
         """
-        data = open('%s.csv' % filepath, 'r')
-        keys = data.readline().strip().split(self.separator)
-        dicts = [dict(list(zip(keys, elem.strip().split(
-            self.separator)))) for elem in data]
-
+        filename = '{}.csv'.format(filepath)
+        dicts = []
+        with open(filename, 'r') as _file:
+            reader = csv.DictReader(_file, delimiter=self.separator)
+            for row in reader:
+                dicts.append(row)
         try:
             elements = {}
             for element in dicts:
@@ -306,8 +304,7 @@ class CSVSource(Source):
                 elements[element[cls.pk_field]] = element
         except KeyError:
             msg = "Primary key was not found. Check that you have "
-            msg += "configured the class correctly. In case you "
-            msg += "have check your data source"
+            msg += "configured the class correctly."
             raise AttributeError(msg)
 
         return elements
