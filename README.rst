@@ -6,9 +6,12 @@
 Welcome to Ojota's documentation!
 =================================
 
+.. image:: https://travis-ci.org/MSA-Argentina/ojota.svg?branch=develop
+    :target: https://travis-ci.org/MSA-Argentina/ojota
+
 Ojota is a ORM and flat file database engine.
 
-Ojota is Free Software! you can check the code at https://github.com/MSA-Argentina/ojota 
+Ojota is Free Software! you can check the code at https://github.com/MSA-Argentina/ojota
 
 
 How does it works?
@@ -100,4 +103,4 @@ Optional dependencies
  * request - To fetch JSON form web sevice
  * flask -- To run the example web service.
 
-You might also want to to take a look at Ojota's sister project called Havaiana http://havaiana.rtfd.org  
+You might also want to to take a look at Ojota's sister project called Havaiana http://havaiana.rtfd.org
