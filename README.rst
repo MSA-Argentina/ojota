@@ -63,7 +63,6 @@ powerfull ORM to play with it
 Supported data formats
 =======================
  * JSON
- * DSON
  * YAML
  * CSV
  * JSON through web service
@@ -99,7 +98,6 @@ From source
 Optional dependencies
 =====================
  * pyyaml - To fecth the data from a file with YAML format
- * dogeon - To fecth the data from a file with DSON format
  * request - To fetch JSON form web sevice
  * flask -- To run the example web service.
 

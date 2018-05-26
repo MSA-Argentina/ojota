@@ -1,0 +1,223 @@
+Modules Reference
+*****************
+
+
+base
+====
+
+
+sources
+=======
+
+   class sources.Source(data_path=None, create_empty=True)
+
+      Base class for all the data sources.
+
+      __init__(data_path=None, create_empty=True)
+
+         Constructor for the Source class.
+
+         Arguments: data_path -- the path where the data is located.
+
+      __weakref__
+
+         list of weak references to the object (if defined)
+
+      _get_file_path(cls)
+
+         Builds the path where the data will be located.
+
+         Arguments:
+            cls -- the class with the data.
+
+      fetch_element(cls, pk)
+
+         Fetch the elements for a given element of a class.
+
+         Arguments:
+            cls - the class with the data. pk - the primary key of the
+            given element.
+
+      fetch_elements(cls)
+
+         Fetch the elements for a given class.
+
+         Arguments:
+            cls - the class with the data.
+
+      save(cls, data)
+
+         Fetch the elements for a given element of a class.
+
+         Arguments:
+            cls - the class with the data. pk - the primary key of the
+            given element.
+
+   class sources.JSONSource(data_path=None, create_empty=True, indent=4)
+
+      Source class for the data stored with JSON format
+
+      __init__(data_path=None, create_empty=True, indent=4)
+
+         Constructor for the Source class.
+
+         Arguments:
+            data_path -- the path where the data is located.
+            create_empty -- if file in data_path is not found, create
+            an empty one. indent -- control the indentation of the
+            JSON in the file.
+
+      read_elements(cls, filepath)
+
+         Reads the elements form a JSON file. Returns a dictionary
+         containing the read data.
+
+         Arguments:
+            filepath -- the path for the json file.
+
+   class sources.YAMLSource(data_path=None, create_empty=True)
+
+      Source class for the data stored with YAML format.
+
+      requires the PyYaml package to run.
+
+      read_elements(cls, filepath)
+
+         Reads the elements form a JSON file. Returns a dictionary
+         containing the read data.
+
+         Arguments:
+            filepath -- the path for the json file.
+
+   class sources.WebServiceSource(data_path=None, method='get', get_all_cmd='/all', get_cmd='/data', user=None, password=None, cert=None, custom_call=None)
+
+      Source class for the data stored with JSON format taken through
+      a Web Service.
+
+         Requires the "requests" package to run.
+         http://pypi.python.org/pypi/requests
+
+      __init__(data_path=None, method='get', get_all_cmd='/all', get_cmd='/data', user=None, password=None, cert=None, custom_call=None)
+
+         Constructor for the WebServiceSource class.
+
+         Arguments:
+            data_path -- the path where the data is located. method --
+            the http method that will be used witht the web service.
+            Defauts to "get". get_all_cmd -- the WS command to fetch
+            all the data. Defaults to "/all". get_cmd -- the WS
+            command to fetch one element. Defaults to "/data" user --
+            the user name for the authentication. If not provided the
+            request will not use authentication. password -- the
+            password for the authentication. If not provided the
+            request will not use authentication.
+
+      read_element(cls, url, pk)
+
+         Reads one element elements form a JSON file. Returns a
+         dictionary containing the read data.
+
+         Arguments:
+            cls -- the data class. url -- the path for the WS. pk --
+            the primary key.
+
+      read_elements(cls, url)
+
+         Reads the elements form a WS request. Returns a dictionary
+         containing the read data.
+
+         Arguments:
+            cls -- the data class. url -- the path for the WS.
+
+
+cache
+=====
+
+   class cache.Cache
+
+      The base Cache class. Stores the cached data in memory.
+
+      __contains__(name)
+
+         Returns True if a given element is cached.
+
+         Arguments:
+            name -- the cache name.
+
+      __weakref__
+
+         list of weak references to the object (if defined)
+
+      get(name)
+
+         Gets the data from cache.
+
+         Arguments:
+            name -- the cache name.
+
+      set(name, elems)
+
+         Sets the data into cache.
+
+         Arguments:
+            name -- the cache name. elems -- the data to cache.
+
+   class cache.Memcache(cache_location='127.0.0.1', port=11211, expiration_time=None, debug=None)
+
+      Stores the cached data in memcache.
+
+      __contains__(name)
+
+         Returns True if a given element is cached.
+
+         Arguments:
+            name -- the cache name.
+
+      __init__(cache_location='127.0.0.1', port=11211, expiration_time=None, debug=None)
+
+         Constructor for the Memcache class.
+
+         Arguments:
+            cache_location -- memcached URI. defaults to 127.0.0.1
+            port -- memcached port. Defaults to 11211 expiration_time
+            -- memcache expiration time debug -- activate memcache
+            debug. Defaults to None
+
+      get(name)
+
+         Gets the data from cache.
+
+         Arguments:
+            name -- the cache name.
+
+      set(name, elems)
+
+         Sets the data into cache.
+
+         Arguments:
+            name -- the cache name. elems -- the data to cache.
+
+   class cache.DummyCache
+
+      Dummy Cache class to be able to use no cache.
+
+      __contains__(name)
+
+         Returns True if a given element is cached.
+
+         Arguments:
+            name -- the cache name.
+
+      get(name)
+
+         Gets the data from cache.
+
+         Arguments:
+            name -- the cache name.
+
+      set(name, elems)
+
+         Sets the data into cache.
+
+         Arguments:
+            name -- the cache name. elems -- the data to cache.

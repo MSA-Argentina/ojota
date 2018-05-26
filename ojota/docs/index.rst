@@ -8,7 +8,7 @@ Welcome to Ojota's documentation!
 
 Ojota is a ORM and flat file database engine.
 
-Ojota is Free Software! you can check the code at https://github.com/MSA-Argentina/ojota 
+Ojota is Free Software! you can check the code at https://github.com/MSA-Argentina/ojota
 
 
 How does it works?
@@ -60,7 +60,6 @@ powerfull ORM to play with it
 Supported data formats
 =======================
  * JSON
- * DSON
  * YAML
  * CSV
  * JSON through web service
@@ -96,11 +95,10 @@ From source
 Optional dependencies
 =====================
  * pyyaml - To fecth the data from a file with YAML format
- * dogeon - To fecth the data from a file with DSON format
  * request - To fetch JSON form web sevice
  * flask -- To run the example web service.
 
-You might also want to to take a look at Ojota's sister project called Havaiana http://havaiana.rtfd.org  
+You might also want to to take a look at Ojota's sister project called Havaiana http://havaiana.rtfd.org
 
 Table of contents
 =================
@@ -116,4 +114,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
