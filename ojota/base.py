@@ -486,6 +486,10 @@ class Ojota(six.with_metaclass(MetaOjota, object)):
         same_class = self.__class__ is other.__class__
         return same_pk and same_class
 
+    def __hash__(self):
+        asdict = self.to_dict()
+        return hash(frozenset(asdict.items()))
+
     def __repr__(self):
         """String representation of the elements."""
         return '%s<%s>' % (self.__class__.__name__, self.primary_key)
