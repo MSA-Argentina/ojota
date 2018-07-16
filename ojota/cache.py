@@ -1,9 +1,20 @@
-from __future__ import absolute_import
+try:
+    # Tries to use ujson
+    import ujson as json
+except ImportError:
+    import json
+
 try:
     import memcache
     memcache_imported = True
-except:
+except ImportError:
     memcache_imported = False
+
+try:
+    import redis
+    redis_imported = True
+except ImportError:
+    redis_imported = False
 
 
 class Cache(object):
@@ -84,6 +95,55 @@ class Memcache(Cache):
             name -- the cache name.
         """
         _in_cache = not self._mc.get(str(name)) is None
+        return _in_cache
+
+
+class RedisCache(Cache):
+    """Stores the cached data in redis."""
+    def __init__(self, cache_location="127.0.0.1", port=6379, db=1,
+                 expiration_time=None, debug=None):
+        """Constructor for the RedisCache class.
+
+        Arguments:
+            cache_location -- redis URI. defaults to 127.0.0.1
+            port -- redis port. Defaults to 6379
+            expiration_time -- cache expiration time
+        """
+        if redis_imported:
+            self._redis = redis.StrictRedis(host=cache_location,
+                                            port=port, db=db)
+            self.expiration_time = expiration_time
+        else:
+            raise Exception("To use Redis as cache you should install the 'redis' package")
+
+    def set(self, name, elems):
+        """Sets the data into cache.
+
+        Arguments:
+            name -- the cache name.
+            elems -- the data to cache.
+        """
+        _data = json.dumps(elems)
+        self._redis.set(str(name), _data,
+                     self.expiration_time)
+
+    def get(self, name):
+        """Gets the data from cache.
+
+        Arguments:
+            name -- the cache name.
+        """
+        elems = self._redis.get(name)
+        _data = json.loads(elems)
+        return _data
+
+    def __contains__(self, name):
+        """Returns True if a given element is cached.
+
+        Arguments:
+            name -- the key name.
+        """
+        _in_cache = self._redis.exists(str(name))
         return _in_cache
 
 
